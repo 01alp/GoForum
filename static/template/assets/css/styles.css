@@ -1,0 +1,25 @@
+@media (min-width: 768px) {
+  #divmenu {
+    width: 20%;
+  }
+}
+
+@media (min-width: 768px) {
+  #divpost {
+    width: 80%;
+  }
+}
+
+@media (max-width: 700px) {
+  #divpost {
+    width: 100%;
+  }
+}
+
+footer {
+  position: relative;
+  margin-top: -27vh; /* negative value of footer height */
+  height: 27vh;
+  clear:both;
+  padding-top:20px;
+} 
