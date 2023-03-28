@@ -30,17 +30,21 @@ func auth(w http.ResponseWriter, r *http.Request) {
 	creds.Email = r.FormValue("email")
 	creds.Password = r.FormValue("password")
 	//add validation!!!
-	// msg := &Message{
-	// 	Email:    creds.Email,
-	// 	Password: creds.Password,
-	// }
-	// fmt.Printf("Try to login with credentials: Email: %s, Password: %s\n", msg.Email, msg.Password)
-	// if !msg.ValidateLogin() {
-	// 	data := Data{LoggedIn: false, User: User{}, Message: msg}
-	// 	tmpl, _ := template.ParseFiles("static/templates/login.html", "static/templates/base.html")
-	// 	tmpl.Execute(w, data)
-	// 	return
-	// }
+	msg := &Message{
+		Email:    creds.Email,
+		Password: creds.Password,
+	}
+	fmt.Printf("Try to login with credentials: Email: %s, Password: %s\n", msg.Email, msg.Password)
+	if !msg.ValidateLogin() {
+		data := Data{LoggedIn: false, User: User{}, Message: msg, Posts: fetchAllPosts(database), Post: Post{}, Threads: fetchAllThreads(database), ModalOpen: "true", ScrollTo: ""}
+		data.Posts = fillPosts(&data, fetchAllPosts(database))
+		tmpl, _ := template.ParseFiles("static/template/index.html", "static/template/base.html")
+		err := tmpl.Execute(w, data)
+		if err != nil {
+			fmt.Println(err)
+		}
+		return
+	}
 	fmt.Println("Logged in, preparing token...")
 	// creds.Username = fetchUserByEmail(database,creds.Email).Username
 	setSessionToken(w, creds)

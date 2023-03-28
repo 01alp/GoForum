@@ -45,11 +45,10 @@ type Comment struct {
 }
 
 type Reaction struct {
-	Id        int
-	Value     int
-	UserId    int
-	CommentId int
-	PostId    int
+	Id     int
+	Value  int
+	UserId int
+	UnitId int
 }
 
 // CRUD: 4 main db commands usually --> create, read, update, delete (we will need just create and read probably)
@@ -213,7 +212,7 @@ func updatePostDislikes(db *sql.DB, Dislikes int, id int) {
 	db.Exec("UPDATE posts SET dislikes = ? WHERE id = ?", Dislikes, id)
 }
 
-func fetchPostsByThread(db *sql.DB, subject string) {
+func fetchPostsByThread(db *sql.DB, subject string) []Post {
 	record, err := db.Query("SELECT * FROM posts WHERE Subject=? OR Subject LIKE  ? OR Subject LIKE ? OR Subject LIKE ?", subject, subject+",%", "%, "+subject+",%", "%, "+subject)
 	if err != nil {
 		log.Fatal(err)
@@ -233,6 +232,7 @@ func fetchPostsByThread(db *sql.DB, subject string) {
 	for _, p := range posts {
 		fmt.Printf("Post by thread %s: Original thread: %s; Content: %s; User_id: %d; Likes: %d; Dislikes: %d; Timestamp: %s \n", subject, p.Thread, p.Content, p.UserId, p.Likes, p.Dislikes, p.Timestamp)
 	}
+	return posts
 }
 
 func fetchPostsByUser(db *sql.DB, user_id int) []Post {
@@ -426,8 +426,6 @@ func createPostsReactionsTable(db *sql.DB) {
 	fmt.Println("Table for posts reactions created successfully!")
 }
 
-// create func addReaction for posts/comments
-
 func addCommentsReactions(db *sql.DB, Reaction int, User_id int, Comment_id int) {
 	records := `INSERT INTO commentsReactions(Reaction, User_id, Comment_id) VALUES (?, ?, ?)`
 	query, err := db.Prepare(records)
@@ -452,34 +450,16 @@ func addPostsReactions(db *sql.DB, Reaction int, User_id int, Post_id int) {
 	}
 }
 
-func fetchReactionByUserAndPost(db *sql.DB, user_id int, post_id int) Reaction {
-
+func fetchReactionByUserAndId(db *sql.DB, table string, user_id int, post_id int) Reaction {
 	var reaction Reaction
 
-	db.QueryRow("SELECT * FROM postsReactions WHERE user_id=? AND post_id=?", user_id, post_id).Scan(&reaction.Id, &reaction.Value, &reaction.UserId, &reaction.PostId)
+	query := fmt.Sprintf("SELECT * FROM %s WHERE user_id=? AND post_id=?", table)
+	db.QueryRow(query, user_id, post_id).Scan(&reaction.Id, &reaction.Value, &reaction.UserId, &reaction.UnitId)
 
 	if reaction.Id == 0 {
 		fmt.Println("No reaction found")
 		return Reaction{}
 	}
-
-	// fmt.Printf("Reaction Id %d, value %d, user id %d, post id %d\n", reaction.Id, reaction.Value, reaction.UserId, reaction.PostId)
-
-	return reaction
-}
-
-func fetchReactionByUserAndComment(db *sql.DB, user_id int, comment_id int) Reaction {
-
-	var reaction Reaction
-
-	db.QueryRow("SELECT * FROM commentsReactions WHERE user_id=? AND comment_id=?", user_id, comment_id).Scan(&reaction.Id, &reaction.Value, &reaction.UserId, &reaction.CommentId)
-
-	if reaction.Id == 0 {
-		fmt.Println("No reaction found")
-		return Reaction{}
-	}
-
-	fmt.Printf("Reaction Id %d, value %d, user id %d, comment id %d\n", reaction.Id, reaction.Value, reaction.UserId, reaction.CommentId)
 
 	return reaction
 }

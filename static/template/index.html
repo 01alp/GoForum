@@ -9,17 +9,23 @@
         <div class="d-flex flex-row">
             <!-- Start: postheader -->
             <div class="col-6">
-                <h2 style="margin-top: 10px;margin-left: 10px;">All posts:</h2>
+                <h2 style="margin-top: 10px;margin-left: 10px;">{{ .Filter}}</h2>
             </div><!-- End: postheader -->
             <!-- Start: categoryColumn -->
             <div class="col-6">
                 <!-- Start: Category -->
-                <form><select class="form-select" style="margin-top: 10px;" name="categoryFilter" id="dropdown"
-                        onchange="filter()">
+                <form id="dropdow"><select class="form-select" style="margin-top: 10px;" name="filter"
+                        onchange="submit()">
                         <optgroup label="Categories">
-                            <option selected="">All Categories</option>
-                            {{range .Threads}}
+                            <!-- <option disabled selected hidden>Categories</option> -->
+                            <option>All Categories</option>
+                            {{$filter := .Filter}}
+                            {{ range .Threads}}
+                            {{if eq . $filter}}
+                            <option disabled selected>{{ . }}</option>
+                            {{else}}
                             <option>{{ . }}</option>
+                            {{end}}
                             {{end}}
                         </optgroup>
                     </select></form><!-- End: Category -->
@@ -51,12 +57,10 @@
             sessionStorage.setItem('scrollpos', window.scrollY);
         })
     })
+    function submit() {
+        let form = document.getElementById("dropdown");
+        form.submit();
+        console.log("Data stored in database!");
+    }
 </script>
 {{end}}
-
-<!-- <script>
-    function filter() {
-        var x = document.getElementById("dropdown").value;
-        document.getElementById("posts").innerHTML = x;
-    }
-</script> -->

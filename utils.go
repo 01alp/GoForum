@@ -62,7 +62,8 @@ func welcome(w http.ResponseWriter, r *http.Request) Data {
 		return output
 	}
 	// If the session is valid, return the welcome message to the user
-	output = Data{LoggedIn: true, User: userSession.user}
+	output.LoggedIn = true
+	output.User = userSession.user
 	fmt.Printf("\nWelcome %s!\n", userSession.user.Username)
 	return output
 }
@@ -107,3 +108,17 @@ func refresh(w http.ResponseWriter, r *http.Request) {
 }
 
 // add refresh func before every action
+
+
+func fillPosts(data *Data, posts []Post) []Post {
+	for i := 0; i < len(posts); i++ {
+		posts[i].User = fetchUserById(database, posts[i].UserId)
+		fmt.Println("userId =", posts[i].UserId)
+		fmt.Println("user =", posts[i].User)
+		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
+		if data.LoggedIn {
+			posts[i].UserReaction = fetchReactionByUserAndId(database, "postsReactions", data.User.Id, posts[i].Id).Value
+		}
+	}
+	return posts
+}

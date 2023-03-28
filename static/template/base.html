@@ -10,7 +10,7 @@
     <link rel="icon" type="image/png" sizes="64x64" href="/static/template/assets/img/icons/forum.png">
     <link rel="icon" type="image/png" sizes="64x64" href="/static/template/assets/img/icons/forum.png">
     <link rel="stylesheet" type="text/css" href="/static/template/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="/static/template/assets/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/static/template/assets/fonts/font-awesome.min.css">
     <link rel="stylesheet" type="text/css" href="/static/template/assets/css/styles.css">
 </head>
 
@@ -71,7 +71,8 @@
                 <div class="col" id="column">
                     <h2 style="margin-top: 10px;margin-left: 10px;">Menu</h2>
                 </div><!-- End: menu-column -->
-                <!-- Start: LeftMenu -->
+                <!-- Start: User Menu -->
+                {{if .LoggedIn}}
                 <nav class="navbar navbar-light navbar-expand-md" style="width: 80%;">
                     <div class="container-fluid"><button data-bs-toggle="collapse" class="navbar-toggler"
                             data-bs-target="#navcol-1"><span class="visually-hidden">Toggle navigation</span><span
@@ -82,62 +83,79 @@
                                 <li class="nav-item d-flex flex-column" style="margin-top: 10px;"><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/house.png"
-                                            style="margin-right: 3px;">&nbsp;Home</a>
-                                </li><!-- End: main -->
+                                            style="margin-right: 3px;">&nbsp;Home</a></li><!-- End: main -->
                                 <!-- Start: user -->
                                 <li class="nav-item d-flex flex-column"><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/dashBoard"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/user.png"
                                             style="margin-right: 3px;">&nbsp;Dashboard</a><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/myPosts"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/email.png"
                                             style="margin-right: 3px;">&nbsp;My
-                                        Posts</a><a
+                                        posts</a><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/likedPosts"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/like.png"
                                             style="margin-right: 3px;">&nbsp;Liked
-                                        Posts</a><a
-                                        class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
+                                        posts</a><a
+                                        class="btn btn-dark text-start d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex align-items-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;font-size: 14px;"
                                         href="/dislikedPosts"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/dislike.png"
-                                            style="margin-right: 3px;">&nbsp;Disliked
-                                        Posts</a><a
+                                            style="margin-right: 3px;">&nbsp;Disliked posts</a><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/commentedPosts"><img
                                             class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                             src="/static/template/assets/img/icons/comments.png"
                                             style="margin-right: 3px;">&nbsp;Commented</a><a
                                         class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                         role="button"
-                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                        style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px; font-size: 14px;"
                                         href="/newPost"><img src="/static/template/assets/img/icons/notes.png"
-                                            style="margin-right: 3px;">&nbsp;New Post</a></li><!-- End: user -->
+                                            style="margin-right: 3px;">&nbsp;New post</a></li><!-- End: user -->
                                 <li class="nav-item"></li>
                             </ul>
                         </div>
                     </div>
-                </nav><!-- End: LeftMenu -->
+                </nav><!-- End: User Menu -->
+                <!-- Start: Guest Menu -->
+                {{else}}
+                <nav class="navbar navbar-light navbar-expand-md" style="width: 80%;">
+                    <div class="container-fluid">
+                        <ul class="navbar-nav d-flex flex-column flex-fill">
+                            <!-- Start: Guest -->
+                            <li class="nav-item d-flex flex-column" style="margin-top: 10px;"><a
+                                    class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
+                                    role="button"
+                                    style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
+                                    href="/"><img
+                                        class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
+                                        src="/static/template/assets/img/icons/house.png"
+                                        style="margin-right: 3px;">&nbsp;Home</a>
+                            </li><!-- End: Guest -->
+                        </ul>
+                    </div>
+                    {{end}}
+                </nav><!-- End: Guest Menu -->
             </div><!-- End: divLeftMenu -->
             {{template "content" .}}
             <!-- Start: notification-modal -->
@@ -179,6 +197,9 @@
                                             </svg></span><input class="form-control form-control" type="text"
                                             name="email" required="" placeholder="Email" minlength="4" maxlength="30"
                                             title="Min. 4, Max. 30 characters"></div>
+                                    {{if .Message}}
+                                    <p class="text-danger">{{index .Message.Errors "Email"}}</p>
+                                    {{end}}
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="input-group"><span
@@ -187,6 +208,9 @@
                                             type="password" name="password" required="" placeholder="Password"
                                             minlength="4" maxlength="20" title="Min. 4, Max. 20 characters">
                                     </div>
+                                    {{if .Message}}
+                                    <p class="text-danger">{{index .Message.Errors "Password"}}</p>
+                                    {{end}}
                                 </div>
                                 <div class="form-group mb-3"><button class="btn btn-primary btn-lg" style="width: 100%;"
                                         type="submit">Log in</button></div>
@@ -286,13 +310,7 @@
 
     <footer class="text-center bg-dark">
         <div class="container text-white py-4 py-lg-5">
-            <p>Forum Project with Standard Go Lang packages and HTML</p>
-            <ul class="list-inline">
-                <li class="list-inline-item me-4"><span><img src="/static/template/assets/img/icons/git.png" style="margin-right: 5px;"><a
-                            class="link-light" href="https://github.com/">Elena Raz</a></span></li>
-                <li class="list-inline-item me-4"><span><img src="/static/template/assets/img/icons/git.png" style="margin-right: 5px;"><a
-                            class="link-light" href="https://github.com/01alp">AlpBal</a></span></li>
-            </ul>
+            <p>Forum project with a standard Golang packages</p>
             <p class="text-muted mb-0">Copyright © 2023</p>
         </div>
     </footer>
@@ -315,7 +333,7 @@
 <div id="posts">
     <!-- Start: post-column -->
     {{range .Posts}}
-     <div class="col"
+    <div class="col"
         style="box-shadow: 2px 2px 4px 4px;border-radius: 10px;background: rgba(244,240,240,0.7);padding: 10px;margin: 10px;">
         <div class="row">
             <div class="col d-flex justify-content-xxl-start align-items-xxl-center">
@@ -352,34 +370,40 @@
         <div class="row">
             <div class="col-md-5 col-lg-4 col-xl-3 col-xxl-3 d-flex flex-row justify-content-sm-center justify-content-lg-start"
                 id="column-like" style="margin-bottom: 5px;">
-                <form action="/post/like/id" method="get" class="reaction-form"><input type="hidden" name="id" value="{{.Id}}">
+                <form action="/post/like/id" method="get" class="reaction-form"><input type="hidden" name="id"
+                        value="{{.Id}}">
                     {{if eq .UserReaction 1}}
-                    <button class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                    <button
+                        class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                         type="submit"
                         style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                             src="static/template/assets/img/icons/like.png"><span>{{.Likes}}</span></button>
                     {{else}}
-                    <button class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                    <button
+                        class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                         type="submit"
                         style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                             src="static/template/assets/img/icons/like.png"><span>{{.Likes}}</span></button>
                     {{end}}
                 </form>
-                <form action="/post/dislike/id" method="get" class="reaction-form"><input type="hidden" name="id" value="{{.Id}}">
+                <form action="/post/dislike/id" method="get" class="reaction-form"><input type="hidden" name="id"
+                        value="{{.Id}}">
                     {{if eq .UserReaction -1}}
-                    <button class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                    <button
+                        class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                         type="submit"
                         style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                             src="static/template/assets/img/icons/dislike.png" width="24"
                             height="24">&nbsp;<span>{{.Dislikes}}</span></button>
                     {{else}}
-                    <button class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
-                    type="submit"
-                    style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
-                        src="static/template/assets/img/icons/dislike.png" width="24"
-                        height="24">&nbsp;<span>{{.Dislikes}}</span></button>
+                    <button
+                        class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                        type="submit"
+                        style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
+                            src="static/template/assets/img/icons/dislike.png" width="24"
+                            height="24">&nbsp;<span>{{.Dislikes}}</span></button>
                     {{end}}
-                        </form>
+                </form>
                 <form action="/post/id" method="get">
                     <input type="hidden" name="id" value="{{.Id}}"><button
                         class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"

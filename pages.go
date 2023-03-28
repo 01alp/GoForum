@@ -22,6 +22,8 @@ type Data struct {
 	ModalOpen string
 	// Scroll page to post
 	ScrollTo string
+	// saves current filter
+	Filter string
 }
 
 type ErrorMsg struct {
@@ -37,6 +39,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 		createError(w, r, http.StatusNotFound)
 		return
 	}
+
+	// if r.Method == "POST" {
+	// 	query := r.URL.Query().Get("categoryFilter")
+	// 	fmt.Println("Search word", query)
+	// }
+
 	setLastPage(w, r.URL.Path)
 
 	// get data for index page
@@ -47,18 +55,19 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("index user", data.User)
-	posts := fetchAllPosts(database)
 
-	for i := 0; i < len(posts); i++ {
-		posts[i].User = fetchUserById(database, posts[i].UserId)
-		fmt.Println("userId =", posts[i].UserId)
-		fmt.Println("user =", posts[i].User)
-		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
-		if data.LoggedIn {
-			posts[i].UserReaction = fetchReactionByUserAndPost(database, data.User.Id , posts[i].Id).Value
-		}
+	var posts []Post
+
+	query := r.URL.Query().Get("filter")
+	if query != "" && query != "All Categories" {
+		data.Filter = query
+		posts = fetchPostsByThread(database, query)
+	} else {
+		posts = fetchAllPosts(database)
+		data.Filter = "All Categories"
 	}
-	data.Posts = posts
+	
+	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
 	if err != nil {
@@ -74,27 +83,32 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func post(w http.ResponseWriter, r *http.Request) {
+	postsTable := "postsReactions"
 	id, _ := strconv.Atoi(r.URL.Query().Get("id"))
 	fmt.Println(id)
 	posts := fetchAllPosts(database)
 	if id > 0 && id <= len(posts) {
-		tmpl, err := template.ParseFiles("static/template/post.html", "static/template/base.html")
-		if err != nil {
-			fmt.Println(err)
-			createError(w, r, http.StatusInternalServerError)
-			return
-		}
-
 		data := welcome(w, r)
 		data.Post = fetchPostByID(database, id)
 		data.Post.Comments = fetchCommentsByPost(database, id)
 
 		for i := 0; i < len(data.Post.Comments); i++ {
 			data.Post.Comments[i].User = fetchUserById(database, data.Post.Comments[i].UserId)
+			if data.LoggedIn {
+				posts[i].UserReaction = fetchReactionByUserAndId(database, postsTable, data.User.Id, posts[i].Id).Value
+			}
 		}
 
 		data.Post.User = fetchUserById(database, data.Post.Id)
 
+		setLastPage(w, "/post/id?id="+strconv.Itoa(id))
+
+		tmpl, err := template.ParseFiles("static/template/post.html", "static/template/base.html")
+		if err != nil {
+			fmt.Println(err)
+			createError(w, r, http.StatusInternalServerError)
+			return
+		}
 		err = tmpl.Execute(w, data)
 		if err != nil {
 			createError(w, r, http.StatusInternalServerError)
@@ -221,7 +235,7 @@ func likedPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	setLastPage(w, r.URL.Path)
-	
+
 	data := welcome(w, r)
 
 	tmpl, err := template.ParseFiles("static/template/likedPosts.html", "static/template/base.html")
