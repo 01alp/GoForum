@@ -57,7 +57,10 @@ func welcome(w http.ResponseWriter, r *http.Request) Data {
 		return output
 	}
 	if userSession.isExpired() {
-		delete(sessions, sessionToken)
+		_, ok := sessions[sessionToken]
+		if ok {
+			delete(sessions, sessionToken)
+		}
 		fmt.Println("Unauthorized")
 		return output
 	}
@@ -107,8 +110,16 @@ func refresh(w http.ResponseWriter, r *http.Request) {
 	})
 }
 
-// add refresh func before every action
+func isUnique(p Post, posts []Post) bool {
+	for _, v := range posts {
+		if p.Id == v.Id {
+			return false
+		}
+	}
+	return true
+}
 
+// add refresh func before every action
 
 func fillPosts(data *Data, posts []Post) []Post {
 	for i := 0; i < len(posts); i++ {

@@ -19,7 +19,9 @@ type Data struct {
 	// All threads for search purposes
 	Threads []string
 	// Is signin modal open
-	ModalOpen string
+	SigninModalOpen string
+	// Is signup modal open
+	SignupModalOpen string
 	// Scroll page to post
 	ScrollTo string
 	// saves current filter
@@ -40,18 +42,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// if r.Method == "POST" {
-	// 	query := r.URL.Query().Get("categoryFilter")
-	// 	fmt.Println("Search word", query)
-	// }
-
 	setLastPage(w, r.URL.Path)
 
 	// get data for index page
 	data := welcome(w, r)
 
 	if r.URL.Query().Get("modal") != "" {
-		data.ModalOpen = r.URL.Query().Get("modal")
+		data.SigninModalOpen = r.URL.Query().Get("modal")
 	}
 
 	fmt.Println("index user", data.User)
@@ -60,13 +57,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	query := r.URL.Query().Get("filter")
 	if query != "" && query != "All Categories" {
-		data.Filter = query
 		posts = fetchPostsByThread(database, query)
 	} else {
 		posts = fetchAllPosts(database)
-		data.Filter = "All Categories"
-	}
+	}	
 	
+	data.Filter = query
 	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
@@ -130,14 +126,13 @@ func commentedPosts(w http.ResponseWriter, r *http.Request) {
 	// get all commented posts and their comments
 	data := welcome(w, r)
 
-	// find all post IDs that user has commented
-	postIDs := fetchCommentsByUser(database, data.User.Id)
-
-	// fetch all information about each post
 	var posts []Post
-	for _, v := range postIDs {
-		post := fetchPostByID(database, v)
-		posts = append(posts, post)
+
+	query := r.URL.Query().Get("filter")
+	if query != "" && query != "All Categories" {
+		posts = fetchPostsByUserCommentsAndThread(database, data.User.Id, query)
+	} else {
+		posts = fetchPostsByUserComments(database, data.User.Id)
 	}
 
 	// fetch comments of each post
@@ -145,6 +140,8 @@ func commentedPosts(w http.ResponseWriter, r *http.Request) {
 		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
 		posts[i].User = fetchUserById(database, posts[i].UserId)
 	}
+
+	data.Filter = query
 	data.Posts = posts
 
 	tmpl, err := template.ParseFiles("static/template/commentedPosts.html", "static/template/base.html")
@@ -189,11 +186,23 @@ func myPosts(w http.ResponseWriter, r *http.Request) {
 
 	// get data for index page
 	data := welcome(w, r)
-	posts := fetchPostsByUser(database, data.User.Id)
+
+	var posts []Post
+
+	query := r.URL.Query().Get("filter")
+	if query != "" && query != "All Categories" {
+		posts = fetchPostsByThreadAndUser(database, query, data.User.Id)
+	} else {
+		posts = fetchPostsByUser(database, data.User.Id)
+		data.Filter = "All Categories"
+	}
 
 	for i := 0; i < len(posts); i++ {
 		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
+		posts[i].User = fetchUserById(database, posts[i].UserId)
 	}
+
+	data.Filter = query
 	data.Posts = posts
 
 	tmpl, err := template.ParseFiles("static/template/myPosts.html", "static/template/base.html")
@@ -272,40 +281,40 @@ func dislikedPosts(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func editComment(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/editComment" {
-		createError(w, r, http.StatusNotFound)
-		return
-	}
-	tmpl, err := template.ParseFiles("static/template/editComment.html")
-	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
-	if err != nil {
-		createError(w, r, http.StatusInternalServerError)
-		return
-	}
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		createError(w, r, http.StatusInternalServerError)
-		return
-	}
-}
+// func editComment(w http.ResponseWriter, r *http.Request) {
+// 	if r.URL.Path != "/editComment" {
+// 		createError(w, r, http.StatusNotFound)
+// 		return
+// 	}
+// 	tmpl, err := template.ParseFiles("static/template/editComment.html")
+// 	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
+// 	if err != nil {
+// 		createError(w, r, http.StatusInternalServerError)
+// 		return
+// 	}
+// 	err = tmpl.Execute(w, nil)
+// 	if err != nil {
+// 		createError(w, r, http.StatusInternalServerError)
+// 		return
+// 	}
+// }
 
-func editPost(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Path != "/editPost" {
-		createError(w, r, http.StatusNotFound)
-		return
-	}
-	tmpl, err := template.ParseFiles("static/template/editPost.html")
-	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
-	if err != nil {
-		createError(w, r, http.StatusInternalServerError)
-		return
-	}
-	err = tmpl.Execute(w, nil)
-	if err != nil {
-		return
-	}
-}
+// func editPost(w http.ResponseWriter, r *http.Request) {
+// 	if r.URL.Path != "/editPost" {
+// 		createError(w, r, http.StatusNotFound)
+// 		return
+// 	}
+// 	tmpl, err := template.ParseFiles("static/template/editPost.html")
+// 	//	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
+// 	if err != nil {
+// 		createError(w, r, http.StatusInternalServerError)
+// 		return
+// 	}
+// 	err = tmpl.Execute(w, nil)
+// 	if err != nil {
+// 		return
+// 	}
+// }
 
 func createError(w http.ResponseWriter, r *http.Request, status int) {
 	// err := &ErrorMsg{}
@@ -315,13 +324,13 @@ func createError(w http.ResponseWriter, r *http.Request, status int) {
 		errMsg.Message = "Bad request"
 	case 404:
 		errMsg.Status = 404
-		errMsg.Message = "Page not found."
+		errMsg.Message = "Page not found"
 	case 500:
 		errMsg.Status = 500
 		errMsg.Message = "Unable to execute the page"
 	default:
 		errMsg.Status = 418
-		errMsg.Message = "Another error we even dont know about"
+		errMsg.Message = "Another error we even don't know about"
 	}
 	http.Redirect(w, r, "/error", http.StatusFound)
 }

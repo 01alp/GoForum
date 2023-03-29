@@ -36,7 +36,7 @@ func auth(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Printf("Try to login with credentials: Email: %s, Password: %s\n", msg.Email, msg.Password)
 	if !msg.ValidateLogin() {
-		data := Data{LoggedIn: false, User: User{}, Message: msg, Posts: fetchAllPosts(database), Post: Post{}, Threads: fetchAllThreads(database), ModalOpen: "true", ScrollTo: ""}
+		data := Data{LoggedIn: false, User: User{}, Message: msg, Posts: fetchAllPosts(database), Post: Post{}, Threads: fetchAllThreads(database), SigninModalOpen: "true", ScrollTo: ""}
 		data.Posts = fillPosts(&data, fetchAllPosts(database))
 		tmpl, _ := template.ParseFiles("static/template/index.html", "static/template/base.html")
 		err := tmpl.Execute(w, data)
@@ -62,8 +62,8 @@ func registration(w http.ResponseWriter, r *http.Request) {
 		Password: creds.Password,
 	}
 	if !msg.ValidateRegistration() {
-		data := Data{LoggedIn: false, User: User{}, Message: msg}
-		tmpl, _ := template.ParseFiles("static/templates/register.html", "static/templates/base.html")
+		data := Data{LoggedIn: false, User: User{}, Message: msg, Posts: fetchAllPosts(database), Post: Post{}, Threads: fetchAllThreads(database), SignupModalOpen: "true", ScrollTo: ""}
+		tmpl, _ := template.ParseFiles("static/template/index.html", "static/template/base.html")
 		tmpl.Execute(w, data)
 		return
 	} else {

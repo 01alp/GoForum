@@ -25,16 +25,18 @@ func main() {
 	mux.HandleFunc("/newPost", newPost)
 	mux.HandleFunc("/likedPosts", likedPosts)
 	mux.HandleFunc("/dislikedPosts", dislikedPosts)
-	mux.HandleFunc("/editComment", editComment)
-	mux.HandleFunc("/editPost", editPost)
+	// mux.HandleFunc("/editComment", editComment)
+	// mux.HandleFunc("/editPost", editPost)
 	mux.HandleFunc("/error", showError)
 
 	// Handle forms
 	mux.HandleFunc("/auth", auth)
 	mux.HandleFunc("/registration", registration)
 	mux.HandleFunc("/logout", logout)
-	mux.HandleFunc("/post/like/id", like)
-	mux.HandleFunc("/post/dislike/id", dislike)
+	mux.HandleFunc("/post/like/id", likePost)
+	mux.HandleFunc("/post/dislike/id", dislikePost)
+	mux.HandleFunc("/comment/like/", likeComment)
+	mux.HandleFunc("/comment/dislike/", dislikeComment)
 
 	// Create a custom server with a timeout
 	server := &http.Server{
@@ -97,6 +99,15 @@ func setDB() {
 	addComment(database, "Hello GOOD adventurer", 1, 2)
 	addComment(database, "Hello GOOD adventurer", 1, 1)
 	addComment(database, "Hello GOOD adventurer", 2, 2)
+	addComment(database, "Hello GOOD adventurer", 3, 2)
+	addComment(database, "Hello GOOD adventurer", 4, 2)
+	addComment(database, "Hello GOOD adventurer", 4, 2)
+	addComment(database, "Hello BAD  adventurer", 5, 2)
+	addComment(database, "Hello GOOD adventurer", 5, 2)
+	addComment(database, "Hello GOOD adventurer", 6, 1)
+	addComment(database, "Hello GOOD adventurer", 7, 2)
+	addComment(database, "Hello GOOD adventurer", 7, 1)
+
 
 	// fetchUsers(database)
 	// fmt.Println("-----------------------")

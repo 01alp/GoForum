@@ -5,7 +5,7 @@ import (
 	"regexp"
 )
 
-var rxEmail = regexp.MustCompile(`.+@.+\\..+`)
+var rxEmail = regexp.MustCompile(`.+@.+\..+`)
 
 type Message struct {
 	Email    string
