@@ -260,8 +260,11 @@
                                                     d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z">
                                                 </path>
                                             </svg></span><input class="form-control form-control" type="text"
-                                            required="" placeholder="Username" minlength="4" maxlength="20"
-                                            title="Min. 4, Max. 20 characters"></div>
+                                            name="username" required="" placeholder="Username" minlength="4"
+                                            maxlength="30" title="Min. 4, Max. 20 characters"></div>
+                                    {{if .Message}}
+                                    <p class="text-danger">{{index .Message.Errors "Username"}}</p>
+                                    {{end}}
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="input-group"><span
@@ -272,8 +275,11 @@
                                                     d="M.05 3.555A2 2 0 0 1 2 2h12a2 2 0 0 1 1.95 1.555L8 8.414.05 3.555ZM0 4.697v7.104l5.803-3.558L0 4.697ZM6.761 8.83l-6.57 4.027A2 2 0 0 0 2 14h12a2 2 0 0 0 1.808-1.144l-6.57-4.027L8 9.586l-1.239-.757Zm3.436-.586L16 11.801V4.697l-5.803 3.546Z">
                                                 </path>
                                             </svg></span><input class="form-control form-control" type="email"
-                                            required="" placeholder="Email" minlength="6" maxlength="50"
+                                            name="email" required="" placeholder="Email" minlength="6" maxlength="50"
                                             title="Min. 6, Max. 50 characters and @"></div>
+                                    {{if .Message}}
+                                    <p class="text-danger">{{index .Message.Errors "Email"}}</p>
+                                    {{end}}
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="input-group"><span
@@ -284,8 +290,11 @@
                                                     d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2z">
                                                 </path>
                                             </svg></span><input class="form-control form-control" type="password"
-                                            required="" placeholder="Password" minlength="4" maxlength="20"
-                                            title="Min. 4, Max. 20 characters"></div>
+                                            name="password" required="" placeholder="Password" minlength="4"
+                                            maxlength="20" title="Min. 4, Max. 20 characters"></div>
+                                    {{if .Message}}
+                                    <p class="text-danger">{{index .Message.Errors "Password"}}</p>
+                                    {{end}}
                                 </div>
                                 <div class="form-group mb-3">
                                     <div class="form-check"><input type="checkbox" class="form-check-input"
@@ -294,7 +303,7 @@
                                             and conditions.</label></div>
                                 </div>
                                 <div class="form-group mb-3"><button class="btn btn-primary btn-lg" style="width: 100%;"
-                                        type="button">Sign Up</button></div>
+                                        type="submit">Sign Up</button></div>
                             </form>
                             <hr style="background-color: #bababa;">
                             <p class="text-center">Already have an Account?&nbsp;<a class="text-decoration-none"
@@ -318,9 +327,14 @@
     <script src="/static/template/assets/js/bootstrap.bundle.min.js"></script>
     <script src="/static/template/assets/js/bs-init.js"></script>
     <script>
-        const modalOpen = "{{.ModalOpen}}"
-        if (modalOpen == "true") {
+        const SigninModalOpen = "{{.SigninModalOpen}}"
+        if (SigninModalOpen == "true") {
             const modal = new bootstrap.Modal(document.getElementById('signin'));
+            modal.show();
+        }
+        const SignupModalOpen = "{{.SignupModalOpen}}"
+        if (SignupModalOpen == "true") {
+            const modal = new bootstrap.Modal(document.getElementById('signup'));
             modal.show();
         }
     </script>
@@ -329,6 +343,7 @@
 
 </html>
 {{end}}
+
 {{ define "post" }}
 <div id="posts">
     <!-- Start: post-column -->
@@ -426,4 +441,37 @@
     </div><!-- End: post-column -->
     {{end}}
 </div>
+{{end}}
+
+{{ define "filterBar" }}
+<!-- Start: psotCategoryDiv -->
+<div class="d-flex flex-row">
+    <!-- Start: postheader -->
+    <div class="col-6"> {{ if and (.Filter) (ne .Filter "All Categories")}}
+        <h2 style="margin-top: 10px;margin-left: 10px;">
+            {{template "heading" .}} in {{ .Filter}}</h2>
+        {{else}}
+        <h2 style="margin-top: 10px;margin-left: 10px;">
+            {{template "heading" .}}</h2>
+        {{end}}
+    </div><!-- End: postheader -->
+    <!-- Start: categoryColumn -->
+    <div class="col-6">
+        <!-- Start: Category -->
+        <form id="dropdow"><select class="form-select" style="margin-top: 10px;" name="filter" onchange="submit()">
+                <optgroup label="Categories">
+                    <!-- <option disabled selected hidden>Categories</option> -->
+                    <option>All Categories</option>
+                    {{$filter := .Filter}}
+                    {{ range .Threads}}
+                    {{if eq . $filter}}
+                    <option disabled selected>{{ . }}</option>
+                    {{else}}
+                    <option>{{ . }}</option>
+                    {{end}}
+                    {{end}}
+                </optgroup>
+            </select></form><!-- End: Category -->
+    </div><!-- End: categoryColumn -->
+</div><!-- End: psotCategoryDiv -->
 {{end}}

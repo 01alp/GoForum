@@ -21,6 +21,7 @@ func setSessionToken(w http.ResponseWriter, creds Credentials) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_token",
 		Value:   sessionToken,
+		Path: "/",
 		Expires: expiresAt,
 	})
 }
@@ -30,6 +31,7 @@ func setLastPage(w http.ResponseWriter, url string) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "last_page",
 		Value:   url,
+		Path: "/",
 		Expires: expiresAt,
 	})
 }
@@ -106,6 +108,7 @@ func refresh(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:    "session_token",
 		Value:   newSessionToken,
+		Path: "/",
 		Expires: time.Now().Add(15 * 60 * time.Second),
 	})
 }

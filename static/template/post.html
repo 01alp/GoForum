@@ -12,18 +12,6 @@
                 <h2 style="margin-top: 10px;margin-left: 10px;">Post:</h2><span
                     style="margin-top: 10px;margin-right: 5px;margin-left: 5px;">{{.Post.Title}}</span>
             </div><!-- End: postheader -->
-            <!-- Start: categoryColumn -->
-            <div class="col-6">
-                <!-- Start: Category -->
-                <form><select class="form-select" style="margin-top: 10px;" name="categoryFilter" disabled="">
-                        <optgroup label="Categories">
-                            <option selected="">All Categories</option>
-                            {{range .Threads}}
-                            <option>{{ . }}</option>
-                            {{end}}
-                        </optgroup>
-                    </select></form><!-- End: Category -->
-            </div><!-- End: categoryColumn -->
         </div><!-- End: psotCategoryDiv -->
         <div id="posts">
             <!-- Start: post-column -->
@@ -67,41 +55,41 @@
                     <div class="col-md-5 col-lg-4 col-xl-3 col-xxl-3 d-flex flex-row justify-content-sm-center justify-content-lg-start"
                         id="column-like" style="margin-bottom: 5px;">
                         <form action="/post/like/id" method="get" class="reaction-form"><input type="hidden" name="id"
-                            value="{{.Post.Id}}">
-                        {{if eq .Post.UserReaction 1}}
-                        <button
-                            class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
-                            type="submit"
-                            style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
-                                src="/static/template/assets/img/icons/like.png"><span>{{.Post.Likes}}</span></button>
-                        {{else}}
-                        <button
-                            class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
-                            type="submit"
-                            style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
-                                src="/static/template/assets/img/icons/like.png"><span>{{.Post.Likes}}</span></button>
-                        {{end}}
-                    </form>
-                    <form action="/post/dislike/id" method="get" class="reaction-form"><input type="hidden" name="id"
-                            value="{{.Post.Id}}">
-                        {{if eq .Post.UserReaction -1}}
-                        <button
-                            class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
-                            type="submit"
-                            style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
-                                src="/static/template/assets/img/icons/dislike.png" width="24"
-                                height="24">&nbsp;<span>{{.Post.Dislikes}}</span></button>
-                        {{else}}
-                        <button
-                            class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
-                            type="submit"
-                            style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
-                                src="/static/template/assets/img/icons/dislike.png" width="24"
-                                height="24">&nbsp;<span>{{.Post.Dislikes}}</span></button>
-                        {{end}}
-                    </form>
-                    <form action="/post/id" method="get">
-                        <input type="hidden" name="id" value="{{.Post.Id}}"><button
+                                value="{{.Post.Id}}">
+                            {{if eq .Post.UserReaction 1}}
+                            <button
+                                class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                                type="submit"
+                                style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
+                                    src="/static/template/assets/img/icons/like.png"><span>{{.Post.Likes}}</span></button>
+                            {{else}}
+                            <button
+                                class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                                type="submit"
+                                style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
+                                    src="/static/template/assets/img/icons/like.png"><span>{{.Post.Likes}}</span></button>
+                            {{end}}
+                        </form>
+                        <form action="/post/dislike/id" method="get" class="reaction-form"><input type="hidden"
+                                name="id" value="{{.Post.Id}}">
+                            {{if eq .Post.UserReaction -1}}
+                            <button
+                                class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                                type="submit"
+                                style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
+                                    src="/static/template/assets/img/icons/dislike.png" width="24"
+                                    height="24">&nbsp;<span>{{.Post.Dislikes}}</span></button>
+                            {{else}}
+                            <button
+                                class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
+                                type="submit"
+                                style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
+                                    src="/static/template/assets/img/icons/dislike.png" width="24"
+                                    height="24">&nbsp;<span>{{.Post.Dislikes}}</span></button>
+                            {{end}}
+                        </form>
+                        <form action="/post/id" method="get">
+                            <input type="hidden" name="id" value="{{.Post.Id}}"><button
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                                 type="submit"
                                 style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
@@ -169,12 +157,16 @@
                     style="margin-bottom: 5px;"><span>{{.Content}}</span></div><!-- End: comment -->
                 <div class="col-md-12 col-lg-5 col-xl-4 col-xxl-4 d-flex flex-row justify-content-center flex-wrap justify-content-sm-center justify-content-lg-start justify-content-xl-end align-items-xl-center"
                     id="column-like-1" style="margin-bottom: 5px;">
-                    <form action="/likeComment" method="post"><button
+                    <form action="/comment/like/" method="get" class="reaction-form"><input type="hidden" name="post_id"
+                        value="{{.PostId}}"><input type="hidden" name="comment_id"
+                        value="{{.Id}}"><button
                             class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                             type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                                 src="/static/template/assets/img/icons/like.png"><span>{{.Likes}}</span></button></form>
-                    <form action="/dislikeComment" method="post"><button
+                    <form action="/comment/dislike/" method="get" class="reaction-form"><input type="hidden" name="post_id"
+                        value="{{.PostId}}"><input type="hidden" name="comment_id"
+                        value="{{.Id}}"><button
                             class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                             type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img

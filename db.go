@@ -42,6 +42,8 @@ type Comment struct {
 	Dislikes  int
 	Timestamp string
 	User      User
+
+	UserReaction int
 }
 
 type Reaction struct {
@@ -428,6 +430,23 @@ func fetchCommentsByPost(db *sql.DB, post_id int) []Comment {
 	// 	fmt.Printf("Comments of post %d: %v \n", c.PostId, c.Content)
 	// }
 	return comments
+}
+
+func fetchCommentByID(db *sql.DB, id int) Comment {
+	record, err := db.Query("SELECT * FROM comments WHERE id=?", id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var comment Comment
+	for record.Next() {
+		err = record.Scan(&comment.Id, &comment.Content, &comment.PostId, &comment.UserId, &comment.Likes, &comment.Dislikes, &comment.Timestamp)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+	return comment
 }
 
 //	reaction tables

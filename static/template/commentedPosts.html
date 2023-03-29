@@ -1,32 +1,22 @@
 {{template "base" .}}
 {{define "title"}}Forum - Commented Posts{{end}}
 {{define "username"}}{{.User.Username}}{{end}}
+{{define "heading"}}All commented posts{{end}}
 {{define "content"}}
 <!-- Start: post-menu-container -->
 <div class="container-fluid">
     <div class="float-end" id="divpost">
-        <!-- Start: psotCategoryDiv -->
-        <div class="d-flex flex-row">
-            <!-- Start: postheader -->
-            <div class="col-6">
-                <h2 style="margin-top: 10px;margin-left: 10px;">Commented posts:</h2>
-            </div><!-- End: postheader -->
-            <!-- Start: categoryColumn -->
-            <div class="col-6">
-                <!-- Start: Category -->
-                <form><select class="form-select" style="margin-top: 10px;" name="categoryFilter">
-                        <optgroup label="Categories">
-                            <option selected="">All Categories</option>
-                            {{range .Threads}}
-                            <option>{{ . }}</option>
-                            {{end}}
-                        </optgroup>
-                    </select></form><!-- End: Category -->
-            </div><!-- End: categoryColumn -->
-        </div><!-- End: psotCategoryDiv -->
+        {{template "filterBar" .}}
         {{template "post" .}}
     </div>
 </div><!-- End: post-menu-container -->
 {{end}}
+
 {{define "script"}}
+<script>
+    function submit() {
+        let form = document.getElementById("dropdown");
+        form.submit();
+    }
+</script>
 {{end}}
