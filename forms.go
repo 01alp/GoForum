@@ -165,6 +165,7 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
+	fmt.Println("new post content", r.FormValue("content"))
 	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)

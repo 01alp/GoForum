@@ -53,16 +53,13 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	fmt.Println("index user", data.User)
 
-	var posts []Post
+	posts := fetchAllPosts(database)
 
-	query := r.URL.Query().Get("filter")
-	if query != "" && query != "All Categories" {
-		posts = fetchPostsByThread(database, query)
-	} else {
-		posts = fetchAllPosts(database)
-	}	
-	
-	data.Filter = query
+	data.Filter = r.URL.Query().Get("filter")
+	if data.Filter != "" && data.Filter != "All Categories" {
+		posts = filterByThread(posts, data.Filter)
+	}
+
 	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/index.html", "static/template/base.html")
@@ -91,7 +88,8 @@ func post(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < len(data.Post.Comments); i++ {
 			data.Post.Comments[i].User = fetchUserById(database, data.Post.Comments[i].UserId)
 			if data.LoggedIn {
-				posts[i].UserReaction = fetchReactionByUserAndId(database, postsTable, data.User.Id, posts[i].Id).Value
+				data.Post.UserReaction = fetchReactionByUserAndId(database, postsTable, data.User.Id, data.Post.Id).Value
+				data.Post.Comments[i].UserReaction = fetchReactionByUserAndId(database, "commentsReactions", data.User.Id, data.Post.Comments[i].Id).Value
 			}
 		}
 
@@ -126,23 +124,14 @@ func commentedPosts(w http.ResponseWriter, r *http.Request) {
 	// get all commented posts and their comments
 	data := welcome(w, r)
 
-	var posts []Post
+	posts := fetchPostsByUserComments(database, data.User.Id)
 
-	query := r.URL.Query().Get("filter")
-	if query != "" && query != "All Categories" {
-		posts = fetchPostsByUserCommentsAndThread(database, data.User.Id, query)
-	} else {
-		posts = fetchPostsByUserComments(database, data.User.Id)
+	data.Filter = r.URL.Query().Get("filter")
+	if data.Filter != "" && data.Filter != "All Categories" {
+		posts = filterByThread(posts, data.Filter)
 	}
 
-	// fetch comments of each post
-	for i := 0; i < len(posts); i++ {
-		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
-		posts[i].User = fetchUserById(database, posts[i].UserId)
-	}
-
-	data.Filter = query
-	data.Posts = posts
+	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/commentedPosts.html", "static/template/base.html")
 	if err != nil {
@@ -187,23 +176,14 @@ func myPosts(w http.ResponseWriter, r *http.Request) {
 	// get data for index page
 	data := welcome(w, r)
 
-	var posts []Post
+	posts := fetchPostsByUser(database, data.User.Id)
 
-	query := r.URL.Query().Get("filter")
-	if query != "" && query != "All Categories" {
-		posts = fetchPostsByThreadAndUser(database, query, data.User.Id)
-	} else {
-		posts = fetchPostsByUser(database, data.User.Id)
-		data.Filter = "All Categories"
+	data.Filter = r.URL.Query().Get("filter")
+	if data.Filter != "" && data.Filter != "All Categories" {
+		posts = filterByThread(posts, data.Filter)
 	}
 
-	for i := 0; i < len(posts); i++ {
-		posts[i].Comments = fetchCommentsByPost(database, posts[i].Id)
-		posts[i].User = fetchUserById(database, posts[i].UserId)
-	}
-
-	data.Filter = query
-	data.Posts = posts
+	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/myPosts.html", "static/template/base.html")
 	if err != nil {
@@ -246,7 +226,14 @@ func likedPosts(w http.ResponseWriter, r *http.Request) {
 	setLastPage(w, r.URL.Path)
 
 	data := welcome(w, r)
+	posts := fetchLikedPostsByUser(database, data.User.Id)
 
+	data.Filter = r.URL.Query().Get("filter")
+	if data.Filter != "" && data.Filter != "All Categories" {
+		posts = filterByThread(posts, data.Filter)
+	}
+
+	data.Posts = fillPosts(&data, posts)
 	tmpl, err := template.ParseFiles("static/template/likedPosts.html", "static/template/base.html")
 	if err != nil {
 		createError(w, r, http.StatusInternalServerError)
@@ -268,6 +255,14 @@ func dislikedPosts(w http.ResponseWriter, r *http.Request) {
 	setLastPage(w, r.URL.Path)
 
 	data := welcome(w, r)
+	posts := fetchDislikedPostsByUser(database, data.User.Id)
+
+	data.Filter = r.URL.Query().Get("filter")
+	if data.Filter != "" && data.Filter != "All Categories" {
+		posts = filterByThread(posts, data.Filter)
+	}
+
+	data.Posts = fillPosts(&data, posts)
 
 	tmpl, err := template.ParseFiles("static/template/dislikedPosts.html", "static/template/base.html")
 	if err != nil {

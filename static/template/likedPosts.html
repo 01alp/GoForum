@@ -1,5 +1,5 @@
 {{template "base" .}}
-{{define "title"}}Forum - My Posts{{end}}
+{{define "title"}}Forum - Liked Posts{{end}}
 {{define "username"}}{{.User.Username}}{{end}}
 {{define "heading"}}All liked posts{{end}}
 {{define "content"}}
@@ -15,6 +15,21 @@
 
 {{define "script"}}
 <script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var scrollpos = sessionStorage.getItem('scrollpos');
+        if (scrollpos) {
+            window.scrollTo({
+                top: scrollpos,
+                behavior: 'instant',
+            });
+            sessionStorage.removeItem('scrollpos');
+        }
+    });
+    document.querySelectorAll('.reaction-form').forEach(item => {
+        item.addEventListener('submit', event => {
+            sessionStorage.setItem('scrollpos', window.scrollY);
+        })
+    })
     function submit() {
         let form = document.getElementById("dropdown");
         form.submit();

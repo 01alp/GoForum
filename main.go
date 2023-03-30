@@ -74,19 +74,16 @@ func setDB() {
 	createPostsReactionsTable(database)
 
 	addUser(database, "test", "test@gmail.com", "1234")
-	addUser(database, "test2", "test2@gmail.com", "1234")
-	addUser(database, "test123", "test123@gmail.com", "varwa123")
+	addUser(database, "Lasso-less Cowboy", "cowboy@gmail.com", "blacksheep")
+	addUser(database, "SnapHappy", "snaphappyphotographer@email.com", "ZoomZoomZap")
 
-	addThread(database, "Cat", 1)
-	addThread(database, "Kitten", 1)
-	addThread(database, "Kittens", 1)
+	addThread(database, "Ranch", 1)
+	addThread(database, "Dogs", 1)
+	addThread(database, "Visual Arts", 1)
 
-	var threads1 = []string{"Cat"}
-	addPost(database, "Some smart thoughts", "blablabla", threads1, 1)
-	var threads2 = []string{"Kitten"}
-	addPost(database, "Some smarter thoughts 1", "blablabla", threads2, 2)
-	var threads3 = []string{"Cat", "Kitten"}
-	addPost(database, "Some smartest thoughts 2", "blablabla", threads3, 1)
+	addPost(database, title1, post1, threads1, 2)
+	addPost(database, title2, post2, threads2, 2)
+	addPost(database, title3, post3, threads3, 3)
 	var threads4 = []string{"Kittens"}
 	addPost(database, "Some smartest thoughts 3", "blablablaaa", threads4, 1)
 	var threads5 = []string{"Kittens"}

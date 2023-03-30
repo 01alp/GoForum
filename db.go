@@ -34,15 +34,15 @@ type Post struct {
 }
 
 type Comment struct {
-	Id        int
-	Content   string
-	PostId    int
-	UserId    int
-	Likes     int
-	Dislikes  int
-	Timestamp string
-	User      User
-
+	Id           int
+	Content      string
+	PostId       int
+	UserId       int
+	Likes        int
+	Dislikes     int
+	Timestamp    string
+	User         User
+	
 	UserReaction int
 }
 
@@ -52,8 +52,6 @@ type Reaction struct {
 	UserId int
 	UnitId int
 }
-
-// CRUD: 4 main db commands usually --> create, read, update, delete (we will need just create and read probably)
 
 // users
 // -------------------------------------------------------------------------------------
@@ -205,26 +203,8 @@ func addPost(db *sql.DB, Title string, Content string, Subject []string, User_id
 // 	db.Exec("UPDATE posts SET title = ?, content = ?, subject = ?, likes = ?, dislikes = ? WHERE id = ?", Title, Content, Subject, Likes, Dislikes, id)
 // }
 
-func updateTableLikes(db *sql.DB, table string, Likes int, id int) error { // posts or comments table
-	query := fmt.Sprintf("UPDATE %s SET likes = ? WHERE id = ?", table)
-	_, err := db.Exec(query, Likes, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func updateTableDislikes(db *sql.DB, table string, Dislikes int, id int) error {
-	query := fmt.Sprintf("UPDATE %s SET dislikes = ? WHERE id = ?", table)
-	_, err := db.Exec(query, Dislikes, id)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-func fetchPostsByThread(db *sql.DB, subject string) []Post {
-	record, err := db.Query("SELECT * FROM posts WHERE Subject=? OR Subject LIKE  ? OR Subject LIKE ? OR Subject LIKE ?", subject, subject+",%", "%, "+subject+",%", "%, "+subject)
+func fetchAllPosts(db *sql.DB) []Post {
+	record, err := db.Query("SELECT * FROM posts")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -239,12 +219,9 @@ func fetchPostsByThread(db *sql.DB, subject string) []Post {
 		}
 		posts = append(posts, post)
 	}
-
-	// for _, p := range posts {
-	// 	fmt.Printf("Post by thread %s: Original thread: %s; Content: %s; User_id: %d; Likes: %d; Dislikes: %d; Timestamp: %s \n", subject, p.Thread, p.Content, p.UserId, p.Likes, p.Dislikes, p.Timestamp)
-	// }
 	return posts
 }
+
 
 func fetchPostsByUser(db *sql.DB, user_id int) []Post {
 	record, err := db.Query("SELECT * FROM posts WHERE user_id=?", user_id)
@@ -262,57 +239,6 @@ func fetchPostsByUser(db *sql.DB, user_id int) []Post {
 		}
 		posts = append(posts, post)
 	}
-	// for _, p := range posts {
-	// 	fmt.Printf("Posts by User %d: id: %d; Content: %s; Subject: %s; User_id: %d, Likes: %d; Dislikes: %d; Timestamp: %s \n", user_id, p.Id, p.Thread, p.Content, p.UserId, p.Likes, p.Dislikes, p.Timestamp)
-	// }
-
-	return posts
-}
-
-
-func fetchPostsByThreadAndUser(db *sql.DB, subject string, id int) []Post {
-	record, err := db.Query("SELECT * FROM posts WHERE (Subject=? OR Subject LIKE  ? OR Subject LIKE ? OR Subject LIKE ?) AND (User_id=?)", subject, subject+",%", "%, "+subject+",%", "%, "+subject, id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer record.Close()
-
-	var posts []Post
-	for record.Next() {
-		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
-		if err != nil {
-			log.Println(err)
-		}
-		posts = append(posts, post)
-	}
-
-	// for _, p := range posts {
-	// 	fmt.Printf("Post by thread %s: Original thread: %s; Content: %s; User_id: %d; Likes: %d; Dislikes: %d; Timestamp: %s \n", subject, p.Thread, p.Content, p.UserId, p.Likes, p.Dislikes, p.Timestamp)
-	// }
-	return posts
-}
-
-
-func fetchAllPosts(db *sql.DB) []Post {
-	record, err := db.Query("SELECT * FROM posts")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer record.Close()
-
-	var posts []Post
-	for record.Next() {
-		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
-		if err != nil {
-			log.Println(err)
-		}
-		posts = append(posts, post)
-	}
-	// for _, p := range posts {
-	// 	fmt.Printf("Posts by User %d: id: %d; Content: %s; Subject: %s, Likes: %d; Dislikes: %d; Timestamp: %s \n", p.UserId, p.Id, p.Content, p.Thread, p.Likes, p.Dislikes, p.Timestamp)
-	// }
 	return posts
 }
 
@@ -355,27 +281,6 @@ func fetchPostsByUserComments(db *sql.DB, id int) []Post {
 
 }
 
-func fetchPostsByUserCommentsAndThread(db *sql.DB, id int, subject string) []Post {
-	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN comments c ON p.id = c.Post_id WHERE c.User_id=? AND p.Subject=?", id, subject)
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer record.Close()
-
-	var posts []Post
-	for record.Next() {
-		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
-		if err != nil {
-			log.Println(err)
-		}
-		if isUnique(post, posts) {
-			posts = append(posts, post)
-		}
-	}
-	return posts
-
-}
 
 // comments
 // -------------------------------------------------------------------------------------
@@ -425,10 +330,6 @@ func fetchCommentsByPost(db *sql.DB, post_id int) []Comment {
 		}
 		comments = append(comments, comment)
 	}
-
-	// for _, c := range comments {
-	// 	fmt.Printf("Comments of post %d: %v \n", c.PostId, c.Content)
-	// }
 	return comments
 }
 
@@ -466,6 +367,19 @@ func createCommentsReactionsTable(db *sql.DB) {
 	fmt.Println("Table for comments reactions created successfully!")
 }
 
+
+func addCommentsReactions(db *sql.DB, Reaction int, User_id int, Comment_id int) {
+	records := `INSERT INTO commentsReactions(Reaction, User_id, Unit_id) VALUES (?, ?, ?)`
+	query, err := db.Prepare(records)
+	if err != nil {
+		log.Fatal(err)
+	}
+	_, err = query.Exec(Reaction, User_id, Comment_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func createPostsReactionsTable(db *sql.DB) {
 	posts_table := `CREATE TABLE postsReactions (
         id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -480,17 +394,6 @@ func createPostsReactionsTable(db *sql.DB) {
 	fmt.Println("Table for posts reactions created successfully!")
 }
 
-func addCommentsReactions(db *sql.DB, Reaction int, User_id int, Comment_id int) {
-	records := `INSERT INTO commentsReactions(Reaction, User_id, Unit_id) VALUES (?, ?, ?)`
-	query, err := db.Prepare(records)
-	if err != nil {
-		log.Fatal(err)
-	}
-	_, err = query.Exec(Reaction, User_id, Comment_id)
-	if err != nil {
-		log.Fatal(err)
-	}
-}
 
 func addPostsReactions(db *sql.DB, Reaction int, User_id int, Post_id int) {
 	records := `INSERT INTO postsReactions(Reaction, User_id, Unit_id) VALUES (?, ?, ?)`
@@ -516,6 +419,64 @@ func fetchReactionByUserAndId(db *sql.DB, table string, user_id int, unit_id int
 	}
 
 	return reaction
+}
+
+func fetchLikedPostsByUser(db *sql.DB, user_id int) []Post {
+	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=1)", user_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var posts []Post
+	for record.Next() {
+		var post Post
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		if err != nil {
+			log.Println(err)
+		}
+		posts = append(posts, post)
+	}
+	return posts
+}
+
+
+func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
+	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=-1)", user_id)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer record.Close()
+
+	var posts []Post
+	for record.Next() {
+		var post Post
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		if err != nil {
+			log.Println(err)
+		}
+		posts = append(posts, post)
+	}
+	return posts
+}
+
+
+func updateTableLikes(db *sql.DB, table string, Likes int, id int) error { // posts or comments table
+	query := fmt.Sprintf("UPDATE %s SET likes = ? WHERE id = ?", table)
+	_, err := db.Exec(query, Likes, id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func updateTableDislikes(db *sql.DB, table string, Dislikes int, id int) error {
+	query := fmt.Sprintf("UPDATE %s SET dislikes = ? WHERE id = ?", table)
+	_, err := db.Exec(query, Dislikes, id)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func deleteRow(db *sql.DB, table string, id int) error {

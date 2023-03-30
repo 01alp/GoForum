@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"time"
 
 	"github.com/gofrs/uuid"
@@ -18,20 +19,32 @@ func setSessionToken(w http.ResponseWriter, creds Credentials) {
 		user:   fetchUserByEmail(database, creds.Email),
 		expiry: expiresAt,
 	}
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "session_token",
+	// 	Value:   sessionToken,
+	// 	Path:    "/",
+	// 	Expires: expiresAt,
+	// })
+	setSessionCookie(w, sessionToken, expiresAt)
+}
+
+func setLastPage(w http.ResponseWriter, url string) {
+	expiresAt := time.Now().Add(15 * 60 * time.Second)
 	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   sessionToken,
-		Path: "/",
+		Name:    "last_page",
+		Value:   url,
+		Path:    "/",
 		Expires: expiresAt,
 	})
 }
 
-func setLastPage(w http.ResponseWriter, url string) {
-	expiresAt := time.Now().Add(60 * 60 * time.Second)
+func setSessionCookie(w http.ResponseWriter, sessionToken string, expiresAt time.Time) {
+	// expiresAt := time.Now().Add(15 * 60 * time.Second)
+
 	http.SetCookie(w, &http.Cookie{
-		Name:    "last_page",
-		Value:   url,
-		Path: "/",
+		Name:    "session_token",
+		Value:   sessionToken,
+		Path:    "/",
 		Expires: expiresAt,
 	})
 }
@@ -105,12 +118,13 @@ func refresh(w http.ResponseWriter, r *http.Request) {
 	// Delete the older session token
 	delete(sessions, sessionToken)
 	// Set the new token as the users `session_token` cookie
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   newSessionToken,
-		Path: "/",
-		Expires: time.Now().Add(15 * 60 * time.Second),
-	})
+	// http.SetCookie(w, &http.Cookie{
+	// 	Name:    "session_token",
+	// 	Value:   newSessionToken,
+	// 	Path:    "/",
+	// 	Expires: time.Now().Add(15 * 60 * time.Second),
+	// })
+	setSessionCookie(w, sessionToken, expiresAt)
 }
 
 func isUnique(p Post, posts []Post) bool {
@@ -120,6 +134,17 @@ func isUnique(p Post, posts []Post) bool {
 		}
 	}
 	return true
+}
+
+func filterByThread(posts []Post, thread string) []Post {
+	var filtered []Post
+	r, _ := regexp.Compile(thread + `($|,)`)
+	for _, p := range posts {
+		if r.MatchString(p.Thread) {
+			filtered = append(filtered, p)
+		}
+	}
+	return filtered
 }
 
 // add refresh func before every action
