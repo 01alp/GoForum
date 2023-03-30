@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"html/template"
 	"net/http"
 	"strconv"
 )
@@ -165,8 +166,21 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
-	fmt.Println("new post content", r.FormValue("content"))
-	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id)
 
+	msg := &Message{
+		Threads: r.Form["threads"],
+	}
+
+	if !msg.ValidateThreads() {
+		data := Data{Message: msg, Post: Post{Title: r.FormValue("title"), Content: r.FormValue("content")}, Threads: fetchAllThreads(database)}
+		fmt.Println(data.Post)
+		tmpl, _ := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
+		tmpl.Execute(w, data)
+		return
+	}
+
+	fmt.Println("new post content", r.FormValue("content"))
+	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id, 0, 0)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
+
 }

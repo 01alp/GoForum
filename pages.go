@@ -204,7 +204,7 @@ func newPost(w http.ResponseWriter, r *http.Request) {
 		createError(w, r, http.StatusNotFound)
 		return
 	}
-	tmpl, err := template.ParseFiles("static/template/createPost.html", "static/template/base.html")
+	tmpl, err := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
 	if err != nil {
 		createError(w, r, http.StatusInternalServerError)
 		return

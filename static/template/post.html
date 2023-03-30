@@ -19,14 +19,14 @@
                 style="margin: 10px;box-shadow: 2px 2px 4px 4px;border-radius: 10px;background: rgba(244,240,240,0.7);padding: 10px;">
                 <div class="row" style="margin-right: 10px;margin-top: 10px;">
                     <div class="col d-flex justify-content-xxl-start align-items-xxl-center">
-                        <div class="text-start d-flex flex-row align-items-md-center align-items-xxl-center"
+                        <div class="text-start d-flex align-items-center"
                             style="margin-top: 5px;margin-right: 5px;margin-left: 5px;"><img
                                 src="/static/template/assets/img/icons/user.png" style="margin-top: -4px;">
                         </div>
                         <span>{{.Post.User.Username}}</span>
                     </div>
                     <div class="col d-flex justify-content-end align-items-xxl-center" style="text-align: right;">
-                        <div class="text-start d-flex ml-auto" id="div-right-1"><img
+                        <div class="text-start d-flex align-items-center ml-auto" id="div-right-1"><img
                                 src="/static/template/assets/img/icons/schedule.png"><span>&nbsp;{{.Post.Timestamp}}</span>
                         </div>
                     </div>
@@ -104,7 +104,7 @@
                                 placeholder="Comment..." required="" minlength="5" maxlength="100"><button
                                 class="btn btn-dark" data-bs-toggle="tooltip" data-bss-tooltip="" type="submit"
                                 style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-left: 10px;margin-right: 5px;"
-                                title="Post"><img src="/static/template/assets/img/icons/email.png"></button>
+                                title="Comment"><img src="/static/template/assets/img/icons/email.png"></button>
                         </form>
                     </div><!-- End: comment -->
                     <div class="col">
@@ -140,13 +140,13 @@
             style="border-style: solid;background: rgba(255,255,255,0.5);padding: 10px;">
             <div class="row" style="margin-right: 10px;margin-top: 10px;">
                 <div class="col d-flex justify-content-xxl-start align-items-xxl-center">
-                    <div class="text-start d-flex flex-row align-items-md-center align-items-xxl-center"
+                    <div class="text-start d-flex align-items-center"
                         style="margin-top: 5px;margin-right: 5px;margin-left: 5px;"><img
                             src="/static/template/assets/img/icons/user.png" style="margin-top: -4px;"></div>
                     <span>{{.User.Username}}</span>
                 </div>
                 <div class="col d-flex justify-content-end align-items-xxl-center" style="text-align: right;">
-                    <div class="text-start d-flex ml-auto" id="div-right-3"><img
+                    <div class="text-start d-flex align-items-center ml-auto" id="div-right-3"><img
                             src="/static/template/assets/img/icons/schedule.png"><span>&nbsp;{{.Timestamp}}</span>
                     </div>
                 </div>
@@ -157,8 +157,8 @@
                     style="margin-bottom: 5px;"><span>{{.Content}}</span></div><!-- End: comment -->
                 <div class="col-md-12 col-lg-5 col-xl-4 col-xxl-4 d-flex flex-row justify-content-center flex-wrap justify-content-sm-center justify-content-lg-start justify-content-xl-end align-items-xl-center"
                     id="column-like-1" style="margin-bottom: 5px;">
-                    <form action="/comment/like/" method="get" class="reaction-form"><input type="hidden" name="comment_id"
-                        value="{{.Id}}">
+                    <form action="/comment/like/" method="get" class="reaction-form"><input type="hidden"
+                            name="comment_id" value="{{.Id}}">
                         {{if eq .UserReaction 1}}
                         <button
                             class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
@@ -171,10 +171,10 @@
                             type="submit"
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                                 src="/static/template/assets/img/icons/like.png"><span>{{.Likes}}</span></button>
-                            {{end}}
-                        </form>
-                    <form action="/comment/dislike/" method="get" class="reaction-form"><input type="hidden" name="comment_id"
-                        value="{{.Id}}">
+                        {{end}}
+                    </form>
+                    <form action="/comment/dislike/" method="get" class="reaction-form"><input type="hidden"
+                            name="comment_id" value="{{.Id}}">
                         {{if eq .UserReaction -1}}
                         <button
                             class="btn active btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
@@ -189,7 +189,8 @@
                             style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-top: 5px;margin-right: 5px;margin-bottom: 5px;"><img
                                 src="/static/template/assets/img/icons/dislike.png" width="24"
                                 height="24">&nbsp;<span>{{.Dislikes}}</span></button>
-                        {{end}}</form>
+                        {{end}}
+                    </form>
                     <form action="/editComment" method="get"><button
                             class="btn btn-dark d-flex d-sm-flex d-md-flex justify-content-start justify-content-sm-start justify-content-md-start"
                             type="submit"
