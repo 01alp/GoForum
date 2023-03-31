@@ -83,10 +83,10 @@ func setDB() {
 	addThread(database, "Dogs", 1)
 	addThread(database, "Other", 1)
 
-	addPost(database, title1, post1, threads1, 2, 2, 1)
-	addPost(database, title2, post2, threads2, 3, 3, 2)
-	addPost(database, title3, post3, threads3, 2, 2, 0)
-	addPost(database, title4, post4, threads4, 4, 7, 1)
+	addPost(database, title1, image1, post1, threads1, 2, 2, 1)
+	addPost(database, title2, image2, post2, threads2, 3, 3, 2)
+	addPost(database, title3, image3, post3, threads3, 2, 2, 0)
+	addPost(database, title4, image4, post4, threads4, 4, 7, 1)
 
 	addComment(database, comment1_1, 1, 2, 1, 0)
 	addComment(database, comment1_2, 1, 3, 2, 0)

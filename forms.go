@@ -3,8 +3,13 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
+
+	"github.com/gofrs/uuid"
 )
 
 func likePost(w http.ResponseWriter, r *http.Request) {
@@ -166,6 +171,41 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
+	fmt.Println("new post content", r.FormValue("image"))
+	// Fetch image from form if exists
+	fileName := ""
+	file, header, err := r.FormFile("image")
+	if err == nil {
+
+		// Print file details for debugging
+		fmt.Printf("Uploaded File: %+v ", header.Filename)
+		fmt.Printf("File Size: %+v ", header.Size)
+		fmt.Println("Checking file before upload...")
+
+		// Check if image is valid JPEG, SVG, PNG or GIF
+		if !strings.HasSuffix(header.Filename, ".jpg") && !strings.HasSuffix(header.Filename, ".jpeg") && !strings.HasSuffix(header.Filename, ".svg") && !strings.HasSuffix(header.Filename, ".png") && !strings.HasSuffix(header.Filename, ".gif") {
+			fmt.Println("Invalid file type")
+			return
+		}
+		// Check if the image is too big (max 20MB)
+		if header.Size > 20000000 {
+			fmt.Println("File is too big")
+			return
+		}
+
+		// upload the image file to static/template/assets/img/
+
+		// Add uuid to the file name to avoid overwriting
+		u, _ := uuid.NewV4()
+		fileName = u.String() + header.Filename
+		f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer f.Close()
+		io.Copy(f, file)
+	}
 
 	msg := &Message{
 		Threads: r.Form["threads"],
@@ -180,7 +220,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("new post content", r.FormValue("content"))
-	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id, 0, 0)
+	addPost(database, r.FormValue("title"), fileName, r.FormValue("content"), r.Form["threads"], data.User.Id, 0, 0)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
