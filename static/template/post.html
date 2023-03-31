@@ -100,7 +100,10 @@
                     <div class="col-12 col-md-7 col-lg-8 col-xl-9 col-xxl-9 d-flex flex-row justify-content-end justify-content-lg-end"
                         style="margin-bottom: 5px;">
                         <form class="d-flex d-md-flex d-lg-flex flex-row justify-content-xxl-end" action="/comment"
-                            method="post" style="margin-left: 5px;width: 90%;"><input class="form-control" type="text"
+                            method="post" style="margin-left: 5px;width: 90%;">
+                            <input type="hidden" name="id"
+                                value="{{.Post.Id}}">
+                            <input class="form-control" type="text" name="comment"
                                 placeholder="Comment..." required="" minlength="5" maxlength="100"><button
                                 class="btn btn-dark" data-bs-toggle="tooltip" data-bss-tooltip="" type="submit"
                                 style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-left: 10px;margin-right: 5px;"

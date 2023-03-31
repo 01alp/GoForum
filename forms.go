@@ -184,3 +184,32 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
+
+func createComment(w http.ResponseWriter, r *http.Request) {
+	data := welcome(w, r)
+
+	// msg := &Message{}
+
+	// if !msg.ValidateComment() {
+	// 	data := Data{Message: msg, Post: Post{Title: r.FormValue("title"), Content: r.FormValue("content")}, Threads: fetchAllThreads(database)}
+	// 	fmt.Println(data.Post)
+	// 	tmpl, _ := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
+	// 	tmpl.Execute(w, data)
+	// 	return
+	// }
+	if data.User.Id == 0 { // if not login
+		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+	}
+
+	fmt.Println("new comment content", r.FormValue("content"))
+	post, _ := strconv.Atoi(r.FormValue("id"))
+	addComment(database, r.FormValue("comment"), post, data.User.Id, 0, 0)
+
+	c, err := r.Cookie("last_page")
+	if err != nil {
+		fmt.Println("cookie err", err)
+		http.Redirect(w, r, "/", http.StatusSeeOther)
+	}
+	fmt.Println("REDIRECT TO", c.Value)
+	http.Redirect(w, r, c.Value, http.StatusSeeOther)
+}

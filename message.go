@@ -94,3 +94,16 @@ func (msg *Message) ValidateThreads() bool {
 	}
 	return len(msg.Errors) == 0
 }
+
+func (msg *Message) ValidateComment() bool {
+
+	msg.Errors = make(map[string]string)
+	
+	// if len(msg.Threads) == 0 {
+	// 	msg.Errors["Threads"] = "Choose at least one category"
+	// 	// fmt.Println("Smth went wrong")
+	// 	// fmt.Println(msg.Errors["Threads"])
+	// }
+	return len(msg.Errors) == 0
+}
+
