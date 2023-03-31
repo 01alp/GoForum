@@ -2,6 +2,7 @@ package main
 
 var threads1 = []string{"Ranch"}
 var title1 string = "Looking for a lasso"
+var image1 string = ""
 var post1 string = `Howdy folks,
 
 I'm in a bit of a pickle and was hoping someone here might be able to help. I'm a new cowboy on the range and I've managed to misplace my trusty lasso.
@@ -14,6 +15,7 @@ Lasso-less Cowboy`
 
 var threads2 = []string{"Ranch", "Dogs"}
 var title2 string = "From Sheep to Coyotes: The Unlikely Hero of My Cowboy Life"
+var image2 string = "03.png"
 var post2 string = `Howdy y'all,
 
 I just wanted to share a little bit about my trusty sheep dog, Buster. This little guy has been by my side through thick and thin on the range. He's helped me herd sheep, keep an eye on the cattle, and even chased off a few coyotes trying to sneak up on our livestock.
@@ -29,6 +31,7 @@ Cowboy with a loyal pup by his side.`
 
 var threads3 = []string{"Visual Arts"}
 var title3 string = "Capturing Life's Wonders: A Discussion on Photography"
+var image3 string = "03.png"
 var post3 string = `Hello everyone!
 
 I'm a new member here and I'm excited to be a part of this forum. I've been reading through some of the threads and it's been great to see all the discussions on ranches and dogs. However, I wanted to start a new conversation on a different topic.

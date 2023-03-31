@@ -2,8 +2,13 @@ package main
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
+	"strings"
+
+	"github.com/google/uuid"
 )
 
 func likePost(w http.ResponseWriter, r *http.Request) {
@@ -166,7 +171,41 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
 	fmt.Println("new post content", r.FormValue("content"))
-	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id)
+	// Fetch image from form if exists
+	fileName := ""
+	file, handler, err := r.FormFile("image")
+	fmt.Println("err", err)
+	if err == nil {
+
+		// Print file details for debugging
+		fmt.Printf("Uploaded File: %+v ", handler.Filename)
+		fmt.Printf("File Size: %+v ", handler.Size)
+		fmt.Println("Checking file before upload...")
+
+		// Check if image is valid JPEG, SVG, PNG or GIF
+		if !strings.HasSuffix(handler.Filename, ".jpg") && !strings.HasSuffix(handler.Filename, ".jpeg") && !strings.HasSuffix(handler.Filename, ".svg") && !strings.HasSuffix(handler.Filename, ".png") && !strings.HasSuffix(handler.Filename, ".gif") {
+			fmt.Println("Invalid file type")
+			return
+		}
+		// Check if the image is too big (max 20MB)
+		if handler.Size > 20000000 {
+			fmt.Println("File is too big")
+			return
+		}
+
+		// upload the image file to static/template/assets/img/
+
+		// Add uuid to the file name to avoid overwriting
+		fileName = uuid.New().String() + handler.Filename
+		f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		defer f.Close()
+		io.Copy(f, file)
+	}
+	addPost(database, r.FormValue("title"), fileName, r.FormValue("content"), r.Form["threads"], data.User.Id)
 
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

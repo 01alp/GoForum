@@ -22,6 +22,7 @@ type Post struct {
 	Id        int
 	Title     string
 	Content   string
+	Image     string
 	Thread    string
 	UserId    int
 	Likes     int
@@ -34,15 +35,15 @@ type Post struct {
 }
 
 type Comment struct {
-	Id           int
-	Content      string
-	PostId       int
-	UserId       int
-	Likes        int
-	Dislikes     int
-	Timestamp    string
-	User         User
-	
+	Id        int
+	Content   string
+	PostId    int
+	UserId    int
+	Likes     int
+	Dislikes  int
+	Timestamp string
+	User      User
+
 	UserReaction int
 }
 
@@ -176,6 +177,7 @@ func createPostsTable(db *sql.DB) {
         "Content" TEXT,
         "Subject" TEXT,
         "User_id" INTEGER,
+		"Image" TEXT,
 		"Likes"	INTEGER DEFAULT 0,
 		"Dislikes" INTEGER DEFAULT 0,
         timestamp TEXT DEFAULT(strftime('%Y.%m.%d %H:%M', 'now')));`
@@ -187,13 +189,13 @@ func createPostsTable(db *sql.DB) {
 	fmt.Println("Table for posts created successfully!")
 }
 
-func addPost(db *sql.DB, Title string, Content string, Subject []string, User_id int) {
-	records := `INSERT INTO posts(Title, Content, Subject, User_id) VALUES (?, ?, ?, ?)`
+func addPost(db *sql.DB, Title string, Image string, Content string, Subject []string, User_id int) {
+	records := `INSERT INTO posts(Title, Content, Image, Subject, User_id) VALUES (?, ?, ?, ?, ?)`
 	query, err := db.Prepare(records)
 	if err != nil {
 		log.Fatal(err)
 	}
-	_, err = query.Exec(Title, Content, strings.Join(Subject, ", "), User_id)
+	_, err = query.Exec(Title, Content, Image, strings.Join(Subject, ", "), User_id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -213,7 +215,7 @@ func fetchAllPosts(db *sql.DB) []Post {
 	var posts []Post
 	for record.Next() {
 		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
@@ -221,7 +223,6 @@ func fetchAllPosts(db *sql.DB) []Post {
 	}
 	return posts
 }
-
 
 func fetchPostsByUser(db *sql.DB, user_id int) []Post {
 	record, err := db.Query("SELECT * FROM posts WHERE user_id=?", user_id)
@@ -233,7 +234,7 @@ func fetchPostsByUser(db *sql.DB, user_id int) []Post {
 	var posts []Post
 	for record.Next() {
 		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
@@ -251,7 +252,7 @@ func fetchPostByID(db *sql.DB, id int) Post {
 
 	var post Post
 	for record.Next() {
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
@@ -260,7 +261,7 @@ func fetchPostByID(db *sql.DB, id int) Post {
 }
 
 func fetchPostsByUserComments(db *sql.DB, id int) []Post {
-	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN comments c ON c.Post_id = p.id WHERE c.User_id=?", id)
+	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Image, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN comments c ON c.Post_id = p.id WHERE c.User_id=?", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -269,7 +270,7 @@ func fetchPostsByUserComments(db *sql.DB, id int) []Post {
 	var posts []Post
 	for record.Next() {
 		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
@@ -280,7 +281,6 @@ func fetchPostsByUserComments(db *sql.DB, id int) []Post {
 	return posts
 
 }
-
 
 // comments
 // -------------------------------------------------------------------------------------
@@ -367,7 +367,6 @@ func createCommentsReactionsTable(db *sql.DB) {
 	fmt.Println("Table for comments reactions created successfully!")
 }
 
-
 func addCommentsReactions(db *sql.DB, Reaction int, User_id int, Comment_id int) {
 	records := `INSERT INTO commentsReactions(Reaction, User_id, Unit_id) VALUES (?, ?, ?)`
 	query, err := db.Prepare(records)
@@ -393,7 +392,6 @@ func createPostsReactionsTable(db *sql.DB) {
 	query.Exec()
 	fmt.Println("Table for posts reactions created successfully!")
 }
-
 
 func addPostsReactions(db *sql.DB, Reaction int, User_id int, Post_id int) {
 	records := `INSERT INTO postsReactions(Reaction, User_id, Unit_id) VALUES (?, ?, ?)`
@@ -440,7 +438,6 @@ func fetchLikedPostsByUser(db *sql.DB, user_id int) []Post {
 	return posts
 }
 
-
 func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
 	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=-1)", user_id)
 	if err != nil {
@@ -459,7 +456,6 @@ func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
 	}
 	return posts
 }
-
 
 func updateTableLikes(db *sql.DB, table string, Likes int, id int) error { // posts or comments table
 	query := fmt.Sprintf("UPDATE %s SET likes = ? WHERE id = ?", table)

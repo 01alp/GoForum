@@ -81,17 +81,17 @@ func setDB() {
 	addThread(database, "Dogs", 1)
 	addThread(database, "Visual Arts", 1)
 
-	addPost(database, title1, post1, threads1, 2)
-	addPost(database, title2, post2, threads2, 2)
-	addPost(database, title3, post3, threads3, 3)
+	addPost(database, title1, image1, post1, threads1, 2)
+	addPost(database, title2, image2, post2, threads2, 2)
+	addPost(database, title3, image3, post3, threads3, 3)
 	var threads4 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 3", "blablablaaa", threads4, 1)
+	addPost(database, "Some smartest thoughts 3", "03.png", "blablablaaa", threads4, 1)
 	var threads5 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 4", "blablablaaa", threads5, 1)
+	addPost(database, "Some smartest thoughts 4", "03.png", "blablablaaa", threads5, 1)
 	var threads6 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 5", "blablablaaa", threads6, 1)
+	addPost(database, "Some smartest thoughts 5", "03.png", "blablablaaa", threads6, 1)
 	var threads7 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 6", "blablablaaa", threads7, 1)
+	addPost(database, "Some smartest thoughts 6", "03.png", "blablablaaa", threads7, 1)
 
 	addComment(database, "Hello brave adventurer", 1, 2)
 	addComment(database, "Hello GOOD adventurer", 1, 2)
@@ -105,7 +105,6 @@ func setDB() {
 	addComment(database, "Hello GOOD adventurer", 6, 1)
 	addComment(database, "Hello GOOD adventurer", 7, 2)
 	addComment(database, "Hello GOOD adventurer", 7, 1)
-
 
 	// fetchUsers(database)
 	// fmt.Println("-----------------------")
