@@ -35,14 +35,14 @@ type Post struct {
 }
 
 type Comment struct {
-	Id           int
-	Content      string
-	PostId       int
-	UserId       int
-	Likes        int
-	Dislikes     int
-	Timestamp    string
-	User         User
+	Id        int
+	Content   string
+	PostId    int
+	UserId    int
+	Likes     int
+	Dislikes  int
+	Timestamp string
+	User      User
 
 	UserReaction int
 }
@@ -189,15 +189,15 @@ func createPostsTable(db *sql.DB) {
 	fmt.Println("Table for posts created successfully!")
 }
 
-
-func addPost(db *sql.DB, Title string, Content string, Subject []string, User_id, Likes, Dislikes int) {
-	records := `INSERT INTO posts(Title, Content, Subject, User_id, Likes, Dislikes) VALUES (?, ?, ?, ?, ?, ?)`
+func addPost(db *sql.DB, Title string, Image string, Content string, Subject []string, User_id, Likes, Dislikes int) {
+	records := `INSERT INTO posts(Title, Image, Content, Subject, User_id, Likes, Dislikes) VALUES (?, ?, ?, ?, ?, ?, ?)`
 	query, err := db.Prepare(records)
 	if err != nil {
+		fmt.Print("ERR", err)
 		log.Fatal(err)
 	}
 
-	_, err = query.Exec(Title, Content, strings.Join(Subject, ", "), User_id, Likes, Dislikes)
+	_, err = query.Exec(Title, Image, Content, strings.Join(Subject, ", "), User_id, Likes, Dislikes)
 	if err != nil {
 		log.Fatal(err)
 	}

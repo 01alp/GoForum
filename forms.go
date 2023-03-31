@@ -2,14 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"html/template"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
 	"strings"
 
-	"github.com/google/uuid"
+	"github.com/gofrs/uuid"
 )
 
 func likePost(w http.ResponseWriter, r *http.Request) {
@@ -171,11 +171,11 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
-	fmt.Println("new post content", r.FormValue("content"))
+	fmt.Println("new post content", r.FormValue("image"))
 	// Fetch image from form if exists
 	fileName := ""
 	file, handler, err := r.FormFile("image")
-	fmt.Println("err", err)
+	fmt.Println("Error: ", err)
 	if err == nil {
 
 		// Print file details for debugging
@@ -197,7 +197,8 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		// upload the image file to static/template/assets/img/
 
 		// Add uuid to the file name to avoid overwriting
-		fileName = uuid.New().String() + handler.Filename
+		u, _ := uuid.NewV4()
+		fileName = u.String() + handler.Filename
 		f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			fmt.Println(err)
@@ -206,8 +207,6 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		defer f.Close()
 		io.Copy(f, file)
 	}
-	addPost(database, r.FormValue("title"), fileName, r.FormValue("content"), r.Form["threads"], data.User.Id)
-
 
 	msg := &Message{
 		Threads: r.Form["threads"],
@@ -222,7 +221,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Println("new post content", r.FormValue("content"))
-	addPost(database, r.FormValue("title"), r.FormValue("content"), r.Form["threads"], data.User.Id, 0, 0)
+	addPost(database, r.FormValue("title"), fileName, r.FormValue("content"), r.Form["threads"], data.User.Id, 0, 0)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 
 }
