@@ -174,22 +174,21 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Println("new post content", r.FormValue("image"))
 	// Fetch image from form if exists
 	fileName := ""
-	file, handler, err := r.FormFile("image")
-	fmt.Println("Error: ", err)
+	file, header, err := r.FormFile("image")
 	if err == nil {
 
 		// Print file details for debugging
-		fmt.Printf("Uploaded File: %+v ", handler.Filename)
-		fmt.Printf("File Size: %+v ", handler.Size)
+		fmt.Printf("Uploaded File: %+v ", header.Filename)
+		fmt.Printf("File Size: %+v ", header.Size)
 		fmt.Println("Checking file before upload...")
 
 		// Check if image is valid JPEG, SVG, PNG or GIF
-		if !strings.HasSuffix(handler.Filename, ".jpg") && !strings.HasSuffix(handler.Filename, ".jpeg") && !strings.HasSuffix(handler.Filename, ".svg") && !strings.HasSuffix(handler.Filename, ".png") && !strings.HasSuffix(handler.Filename, ".gif") {
+		if !strings.HasSuffix(header.Filename, ".jpg") && !strings.HasSuffix(header.Filename, ".jpeg") && !strings.HasSuffix(header.Filename, ".svg") && !strings.HasSuffix(header.Filename, ".png") && !strings.HasSuffix(header.Filename, ".gif") {
 			fmt.Println("Invalid file type")
 			return
 		}
 		// Check if the image is too big (max 20MB)
-		if handler.Size > 20000000 {
+		if header.Size > 20000000 {
 			fmt.Println("File is too big")
 			return
 		}
@@ -198,7 +197,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 
 		// Add uuid to the file name to avoid overwriting
 		u, _ := uuid.NewV4()
-		fileName = u.String() + handler.Filename
+		fileName = u.String() + header.Filename
 		f, err := os.OpenFile("./static/template/assets/img/"+fileName, os.O_WRONLY|os.O_CREATE, 0666)
 		if err != nil {
 			fmt.Println(err)
