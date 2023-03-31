@@ -1,5 +1,6 @@
 package main
 
+// first post
 var threads1 = []string{"Ranch"}
 var title1 string = "Looking for a lasso"
 var image1 string = ""
@@ -13,6 +14,11 @@ I'm hoping to get back to roping and wrangling soon, so any help would be greatl
 Thanks in advance,
 Lasso-less Cowboy`
 
+var comment1_1 string = "Hey there, Lasso-less Cowboy! Sorry to hear about your misfortune. If you're in a real bind and need a lasso ASAP, you could always try fashioning one out of some rope or twine. It might not be as sturdy as a regular lasso, but it could tide you over until you find your missing one or can purchase a new one. Just be careful not to injure yourself or your livestock in the process. Best of luck!"
+var comment1_2 string = "Howdy, Lasso-less Cowboy! As a seasoned cowboy myself, I've lost my fair share of lassos over the years. One tip I can offer is to check with any local trading posts or general stores in the area. Sometimes, other cowboys might have found a stray lasso and brought it in to sell or trade. It's always worth a shot! Happy roping."
+var comment1_3 string = "Howdy there! Losing your lasso can be a real pain in the neck, especially when you're just starting out. One trick that might help is to retrace your steps from the last time you used it. Sometimes, we forget that we put things down in strange places, and we end up looking in all the wrong spots. Good luck on your search, partner!"
+
+// second post
 var threads2 = []string{"Ranch", "Dogs"}
 var title2 string = "From Sheep to Coyotes: The Unlikely Hero of My Cowboy Life"
 var image2 string = "03.png"
@@ -29,18 +35,41 @@ Thanks for listening to me ramble on about my furry friend. I reckon I better ge
 Happy trails,
 Cowboy with a loyal pup by his side.`
 
-var threads3 = []string{"Visual Arts"}
+var comment2_1 string = "Howdy Cowboy with a loyal pup by his side, thanks for sharing your story about Buster! It's always heartwarming to hear about the special bond between a cowboy and his trusty dog. I couldn't agree more that sheep dogs are a valuable asset on the range. They're not only great at herding, but they also provide companionship and security. Here's to many more happy trails with Buster by your side!"
+var comment2_2 string = "Howdy partner, your story about Buster reminded me of my own loyal sheep dog, Rusty. He may not be the biggest or the fastest either, but he's got a nose for finding lost livestock and a bark that can be heard for miles. It's great to see other cowboys and cowgirls appreciate the value of having a sheep dog on the range. Keep up the good work, and give Buster a pat on the head for me!"
+
+// third post
+
+var threads3 = []string{"Other"}
 var title3 string = "Capturing Life's Wonders: A Discussion on Photography"
 var image3 string = "03.png"
 var post3 string = `Hello everyone!
 
-I'm a new member here and I'm excited to be a part of this forum. I've been reading through some of the threads and it's been great to see all the discussions on ranches and dogs. However, I wanted to start a new conversation on a different topic.
+I'm fixin' to introduce myself as a fresh member of this here forum. I've been scannin' through some of the threads and let me tell you, it's been a hoot to see y'all talkin' 'bout ranches and pups. But, I reckon it's high time we rustle up a new conversation about somethin' else.
 
-I'm a big fan of photography and I was wondering if anyone else here enjoys taking pictures? Specifically, I love capturing landscapes and animals in their natural habitats. There's something truly magical about being able to freeze a moment in time and preserve it forever.
+I'm a pretty big fan of photography and I was wonderin' if any of y'all feel the same. I'm partial to snappin' shots of landscapes and critters in their natural stompin' grounds. There's somethin' downright special 'bout capturin' a moment and savin' it forever.
 
-I'd love to hear from other members who enjoy photography as well. What kind of camera do you use? What are some of your favorite subjects to photograph? And do you have any tips or tricks for getting the perfect shot?
-
-Looking forward to hearing from you all!
+Now, I'd be mighty obliged to hear from any of y'all who share this passion. What kinda camera do ya use? What sorta subjects do ya like to snap? And, do ya have any tips or tricks fer gettin' the perfect shot?
 
 Best regards,
 New member`
+
+var comment3_1 string = "Howdy, folks! As a cowboy and a lover of photography, I reckon there ain't nothin' quite like capturing the thrill and excitement of a rodeo. I use an old Nikon F2 camera, and while it may not be as fancy as some of them newfangled models, it gets the job done just fine. There's somethin' about the way the film captures the grit and raw energy of the bulls and the cowboys that digital just can't match. So grab your gear and join me in the arena for some good old-fashioned rodeo photography!"
+
+// fourt post
+var threads4 = []string{"Other"}
+var title4 = "Cowgirl Seeks Cowboy: Ride, Rope, and Wrangle Together"
+var image4 string = "03.png"
+var post4 string = `Howdy fellas,
+
+I'm a cowgirl on the lookout for a cowboy who can ride, rope, and wrangle with the best of them. Someone who knows the ins and outs of ranch life and can appreciate a hard day's work.
+
+Now, I'm not just looking for any old cowboy. I want someone who's got a good head on their shoulders, a kind heart, and a strong work ethic. Someone who's not afraid to get their hands dirty and who knows how to treat a lady right.
+
+So if you think you fit the bill, send me a message and let's see if we can hit it off. Bonus points if you know how to two-step and don't mind a little dirt on your boots.
+
+Looking forward to hearing from you,
+Cowgirl on the lookout.`
+
+var comment4_1 string = "Sounds like you're looking for a real cowboy, not just a city slicker in boots. I hope you find your perfect match!"
+var comment4_2 string = "Howdy ma'am, your post caught my eye. I reckon I fit the bill of the cowboy you're looking for. I've been riding, roping, and wrangling since I was knee-high to a grasshopper, and I know how to treat a lady right. I'd love to two-step with you and show you what a real cowboy can do. Let me know if you're interested."

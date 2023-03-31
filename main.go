@@ -37,6 +37,7 @@ func main() {
 	mux.HandleFunc("/post/dislike/id", dislikePost)
 	mux.HandleFunc("/comment/like/", likeComment)
 	mux.HandleFunc("/comment/dislike/", dislikeComment)
+	mux.HandleFunc("/comment", createComment)
 	mux.HandleFunc("/createPost", createPost)
 
 	// Create a custom server with a timeout
@@ -76,65 +77,24 @@ func setDB() {
 	addUser(database, "test", "test@gmail.com", "1234")
 	addUser(database, "Lasso-less Cowboy", "cowboy@gmail.com", "blacksheep")
 	addUser(database, "SnapHappy", "snaphappyphotographer@email.com", "ZoomZoomZap")
+	addUser(database, "RodeoQueen", "rodeoqueen@email.com", "kingtomyqueen")
 
 	addThread(database, "Ranch", 1)
 	addThread(database, "Dogs", 1)
-	addThread(database, "Visual Arts", 1)
+	addThread(database, "Other", 1)
 
-	addPost(database, title1, image1, post1, threads1, 2)
-	addPost(database, title2, image2, post2, threads2, 2)
-	addPost(database, title3, image3, post3, threads3, 3)
-	var threads4 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 3", "03.png", "blablablaaa", threads4, 1)
-	var threads5 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 4", "03.png", "blablablaaa", threads5, 1)
-	var threads6 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 5", "03.png", "blablablaaa", threads6, 1)
-	var threads7 = []string{"Kittens"}
-	addPost(database, "Some smartest thoughts 6", "03.png", "blablablaaa", threads7, 1)
+	addPost(database, title1, image1, post1, threads1, 2, 2, 1)
+	addPost(database, title2, image2, post2, threads2, 3, 3, 2)
+	addPost(database, title3, image3, post3, threads3, 2, 2, 0)
+	addPost(database, title4, image4, post4, threads4, 4, 7, 1)
 
-	addComment(database, "Hello brave adventurer", 1, 2)
-	addComment(database, "Hello GOOD adventurer", 1, 2)
-	addComment(database, "Hello GOOD adventurer", 1, 1)
-	addComment(database, "Hello GOOD adventurer", 2, 2)
-	addComment(database, "Hello GOOD adventurer", 3, 2)
-	addComment(database, "Hello GOOD adventurer", 4, 2)
-	addComment(database, "Hello GOOD adventurer", 4, 2)
-	addComment(database, "Hello BAD  adventurer", 5, 2)
-	addComment(database, "Hello GOOD adventurer", 5, 2)
-	addComment(database, "Hello GOOD adventurer", 6, 1)
-	addComment(database, "Hello GOOD adventurer", 7, 2)
-	addComment(database, "Hello GOOD adventurer", 7, 1)
+	addComment(database, comment1_1, 1, 2, 1, 0)
+	addComment(database, comment1_2, 1, 3, 2, 0)
+	addComment(database, comment1_3, 1, 4, 0, 0)
+	addComment(database, comment2_1, 2, 2, 2, 1)
+	addComment(database, comment2_2, 2, 3, 0, 0)
+	addComment(database, comment3_1, 3, 4, 3, 0)
+	addComment(database, comment4_1, 4, 2, 0, 1)
+	addComment(database, comment4_2, 4, 3, 2, 2)
 
-	// fetchUsers(database)
-	// fmt.Println("-----------------------")
-	// fetchUserByEmail(database, "test@gmail.com")
-
-	// fmt.Println("-----------------------")
-	// fetchPostsByThread(database, "Kitten")
-	// fetchPostsByThread(database, "Cat")
-
-	// fmt.Println("-----------------------")
-	// fetchPostsByUser(database, 1)
-
-	// fmt.Println("-----------------------")
-	// fetchCommentsByPost(database, 1)
-
-	// fmt.Println("-----------------------")
-	// fetchCommentsByUser(database, 1)
-
-	// reaction test
-	// addPostsReactions(database, -1, 1, 1)
-	// addPostsReactions(database, 0, 2, 2)
-	fmt.Println()
-	// fetchReactionByUserAndPost(database, 1, 1)
-	// fetchReactionByUserAndPost(database, 1, 2)
-	// fetchReactionByUserAndPost(database, 2, 2)
-
-	// addCommentsReactions(database, -1, 1, 1)
-	// addCommentsReactions(database, 0, 2, 2)
-	// fmt.Println()
-	// fetchReactionByUserAndComment(database, 1, 1)
-	// fetchReactionByUserAndComment(database, 1, 2)
-	// fetchReactionByUserAndComment(database, 2, 2)
 }

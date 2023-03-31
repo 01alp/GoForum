@@ -11,6 +11,7 @@ type Message struct {
 	Email    string
 	Username string
 	Password string
+	Threads  []string
 	Errors   map[string]string
 }
 
@@ -80,3 +81,29 @@ func (msg *Message) ValidateRegistration() bool {
 	}
 	return len(msg.Errors) == 0
 }
+
+func (msg *Message) ValidateThreads() bool {
+
+	msg.Errors = make(map[string]string)
+
+	// check if at least one thread is chosen when creating new post
+	if len(msg.Threads) == 0 {
+		msg.Errors["Threads"] = "Choose at least one category"
+		// fmt.Println("Smth went wrong")
+		// fmt.Println(msg.Errors["Threads"])
+	}
+	return len(msg.Errors) == 0
+}
+
+func (msg *Message) ValidateComment() bool {
+
+	msg.Errors = make(map[string]string)
+	
+	// if len(msg.Threads) == 0 {
+	// 	msg.Errors["Threads"] = "Choose at least one category"
+	// 	// fmt.Println("Smth went wrong")
+	// 	// fmt.Println(msg.Errors["Threads"])
+	// }
+	return len(msg.Errors) == 0
+}
+
