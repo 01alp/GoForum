@@ -2,17 +2,20 @@ package main
 
 import (
 	"fmt"
+	"mime/multipart"
 	"regexp"
+	"strings"
 )
 
 var rxEmail = regexp.MustCompile(`.+@.+\..+`)
 
 type Message struct {
-	Email    string
-	Username string
-	Password string
-	Threads  []string
-	Errors   map[string]string
+	Email       string
+	Username    string
+	Password    string
+	Threads     []string
+	ImageHeader *multipart.FileHeader
+	Errors      map[string]string
 }
 
 func (msg *Message) ValidateLogin() bool {
@@ -98,7 +101,7 @@ func (msg *Message) ValidateThreads() bool {
 func (msg *Message) ValidateComment() bool {
 
 	msg.Errors = make(map[string]string)
-	
+
 	// if len(msg.Threads) == 0 {
 	// 	msg.Errors["Threads"] = "Choose at least one category"
 	// 	// fmt.Println("Smth went wrong")
@@ -107,3 +110,21 @@ func (msg *Message) ValidateComment() bool {
 	return len(msg.Errors) == 0
 }
 
+func (msg *Message) ValidateImage() bool {
+	msg.Errors = make(map[string]string)
+
+	// Check if image is valid JPEG, SVG, PNG or GIF
+	if !strings.HasSuffix(msg.ImageHeader.Filename, ".jpg") && !strings.HasSuffix(msg.ImageHeader.Filename, ".jpeg") && !strings.HasSuffix(msg.ImageHeader.Filename, ".svg") && !strings.HasSuffix(msg.ImageHeader.Filename, ".png") && !strings.HasSuffix(msg.ImageHeader.Filename, ".gif") {
+		msg.Errors["Image"] = "Choose valid image type: JPEG, SVG, PNG or GIF"
+		fmt.Println(msg.Errors["Image"])
+
+	}
+	// Check if the image is too big (max 20MB)
+	if msg.ImageHeader.Size > 20000000 {
+		msg.Errors["Image"] = "File size is too big. Choose image that is smaller than 20MB"
+		fmt.Println(msg.Errors["Image"])
+
+	}
+	return len(msg.Errors) == 0
+
+}

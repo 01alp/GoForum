@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"strconv"
-	"strings"
 
 	"github.com/gofrs/uuid"
 )
@@ -171,30 +170,39 @@ func dislikeComment(w http.ResponseWriter, r *http.Request) {
 func createPost(w http.ResponseWriter, r *http.Request) {
 	data := welcome(w, r)
 	r.ParseForm()
-	fmt.Println("new post content", r.FormValue("image"))
 	// Fetch image from form if exists
-	fileName := ""
 	file, header, err := r.FormFile("image")
+
+	data.Message = &Message{
+		Threads:     r.Form["threads"],
+		ImageHeader: header,
+	}
+
+	fileName := ""
 	if err == nil {
 
-		// Print file details for debugging
 		fmt.Printf("Uploaded File: %+v ", header.Filename)
 		fmt.Printf("File Size: %+v ", header.Size)
 		fmt.Println("Checking file before upload...")
 
-		// Check if image is valid JPEG, SVG, PNG or GIF
-		if !strings.HasSuffix(header.Filename, ".jpg") && !strings.HasSuffix(header.Filename, ".jpeg") && !strings.HasSuffix(header.Filename, ".svg") && !strings.HasSuffix(header.Filename, ".png") && !strings.HasSuffix(header.Filename, ".gif") {
-			fmt.Println("Invalid file type")
+		if !data.Message.ValidateImage() {
+			data.Post.Title = r.FormValue("title")
+			data.Post.Content = r.FormValue("content")
+			tmpl, err := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
+			if err != nil {
+				createError(w, r, http.StatusInternalServerError)
+				return
+			}
+			err = tmpl.Execute(w, data)
+			if err != nil {
+				createError(w, r, http.StatusInternalServerError)
+				return
+			}
 			return
-		}
-		// Check if the image is too big (max 20MB)
-		if header.Size > 20000000 {
-			fmt.Println("File is too big")
-			return
+
 		}
 
 		// upload the image file to static/template/assets/img/
-
 		// Add uuid to the file name to avoid overwriting
 		u, _ := uuid.NewV4()
 		fileName = u.String() + header.Filename
@@ -207,15 +215,19 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		io.Copy(f, file)
 	}
 
-	msg := &Message{
-		Threads: r.Form["threads"],
-	}
-
-	if !msg.ValidateThreads() {
-		data := Data{Message: msg, Post: Post{Title: r.FormValue("title"), Content: r.FormValue("content")}, Threads: fetchAllThreads(database)}
-		fmt.Println(data.Post)
-		tmpl, _ := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
-		tmpl.Execute(w, data)
+	if !data.Message.ValidateThreads() {
+		data.Post.Title = r.FormValue("title")
+		data.Post.Content = r.FormValue("content")
+		tmpl, err := template.ParseFiles("static/template/newPost.html", "static/template/base.html")
+		if err != nil {
+			createError(w, r, http.StatusInternalServerError)
+			return
+		}
+		err = tmpl.Execute(w, data)
+		if err != nil {
+			createError(w, r, http.StatusInternalServerError)
+			return
+		}
 		return
 	}
 
@@ -239,17 +251,19 @@ func createComment(w http.ResponseWriter, r *http.Request) {
 	// }
 	if data.User.Id == 0 { // if not login
 		http.Redirect(w, r, "/?modal=true", http.StatusSeeOther)
+		return
 	}
 
 	fmt.Println("new comment content", r.FormValue("content"))
 	post, _ := strconv.Atoi(r.FormValue("id"))
 	addComment(database, r.FormValue("comment"), post, data.User.Id, 0, 0)
 
-	c, err := r.Cookie("last_page")
-	if err != nil {
-		fmt.Println("cookie err", err)
-		http.Redirect(w, r, "/", http.StatusSeeOther)
-	}
-	fmt.Println("REDIRECT TO", c.Value)
-	http.Redirect(w, r, c.Value, http.StatusSeeOther)
+	// c, err := r.Cookie("last_page")
+	// if err != nil {
+	// 	fmt.Println("cookie err", err)
+	// 	http.Redirect(w, r, "/", http.StatusSeeOther)
+	// }
+	// fmt.Println("REDIRECT TO", c.Value)
+	// http.Redirect(w, r, c.Value, http.StatusSeeOther)
+	http.Redirect(w, r, "/post/id?id="+r.FormValue("id"), http.StatusSeeOther)
 }

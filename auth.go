@@ -10,8 +10,8 @@ import (
 var sessions = map[string]session{}
 
 type session struct {
-	user User
-	expiry   time.Time
+	user   User
+	expiry time.Time
 }
 
 func (s session) isExpired() bool {
@@ -79,16 +79,18 @@ func logout(w http.ResponseWriter, r *http.Request) {
 		if err == http.ErrNoCookie {
 			// If the cookie is not set, return an unauthorized status
 			fmt.Println("Unauthorized")
+			http.Redirect(w, r, "/", http.StatusSeeOther)
 		}
 		// For any other type of error, return a bad request status
 		fmt.Println("Bad Request")
+	} else {
+		sessionToken := c.Value
+		delete(sessions, sessionToken)
+		http.SetCookie(w, &http.Cookie{
+			Name:    "session_token",
+			Value:   "",
+			Expires: time.Now(),
+		})
+		http.Redirect(w, r, "/", http.StatusSeeOther)
 	}
-	sessionToken := c.Value
-	delete(sessions, sessionToken)
-	http.SetCookie(w, &http.Cookie{
-		Name:    "session_token",
-		Value:   "",
-		Expires: time.Now(),
-	})
-	http.Redirect(w, r, "/", http.StatusSeeOther)
 }

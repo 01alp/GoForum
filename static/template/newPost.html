@@ -9,7 +9,7 @@
         <div class="d-flex flex-row">
             <!-- Start: postheader -->
             <div class="col-6">
-                <h2 style="margin-top: 10px;margin-left: 10px;">Create new post:</h2>
+                <h2 style="margin-top: 10px;margin-left: 10px;">Create new post</h2>
             </div><!-- End: postheader -->
             <!-- Start: categoryColumn -->
             <div class="col-6">
@@ -19,6 +19,7 @@
                 </form><!-- End: Category -->
             </div><!-- End: categoryColumn -->
         </div><!-- End: header div -->
+        {{ if .LoggedIn}}
         <div id="createPost">
             <!-- Start: newpostColumn -->
             <div class="col"
@@ -48,11 +49,12 @@
                                     for="formCheck-2">{{.}}</label></div>
                             <!-- End: categoriesCheckbox -->
                             {{end}}
-                            <div>
-                                {{if .Message}}
-                                <p class="text-danger">{{index .Message.Errors "Threads"}}</p>
-                                {{end}}
-                            </div>
+
+                        </div>
+                        <div>
+                            {{if .Message}}
+                            <p class="text-danger">{{index .Message.Errors "Threads"}}</p>
+                            {{end}}
                         </div>
 
                     </div><!-- End: CategoriesRow -->
@@ -63,6 +65,11 @@
                         </div>
                         <div class="col-sm-12 col-md-8 d-flex align-items-center"><input class="form-control"
                                 type="file" name="image" accept="image/*"></div>
+                        <div>
+                            {{if .Message}}
+                            <p class="text-danger">{{index .Message.Errors "Image"}}</p>
+                            {{end}}
+                        </div>
                     </div><!-- End: TitleRow -->
                     <!-- Start: TitleRow -->
                     <div class="row my-3">
@@ -72,7 +79,7 @@
                         <div class="col-sm-12 col-md-8 d-flex align-items-center"><textarea
                                 class="form-control form-control-lg" name="content"
                                 placeholder="Please type your text here..." rows="3" wrap="soft" minlength="3"
-                                maxlength="500">{{ if .Post}}{{.Post.Content}}{{end}}</textarea></div>
+                                maxlength="500" required="">{{ if .Post}}{{.Post.Content}}{{end}}</textarea></div>
                     </div><!-- End: TitleRow -->
                     <div class="row">
                         <div class="col d-flex d-lg-flex justify-content-end justify-content-lg-end"><button
@@ -83,6 +90,13 @@
                 </form>
             </div><!-- End: newpostColumn -->
         </div>
+        {{else}}
+        <div class="col" style="padding: 10px;">
+            <p> Looks like you are trying to jump the gun, cowboy 🤠</p>
+            <p> If y'all wanna start creating posts, you gotta first register or sign in. It's easy as pie, I
+                tell ya!</p>
+        </div>
+        {{end}}
     </div>
 </div><!-- End: post-menu-container -->
 {{end}}

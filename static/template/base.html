@@ -14,7 +14,7 @@
     <link rel="stylesheet" type="text/css" href="/static/template/assets/css/styles.css">
 </head>
 
-<body style="background: url(&quot;/static/template/assets/img/03.png&quot;) top / cover repeat;">
+<body style="background: url(&quot;/static/template/assets/img/bg.png&quot;) top / cover repeat;">
     <section id="herosection" style="width: 100%;height: 100vh;">
         {{if .LoggedIn}}
         <!-- Start: NavBarUser -->
@@ -37,7 +37,7 @@
                             "username" .}}</span></a><a class="btn btn-dark d-lg-flex align-items-lg-center ms-md-2"
                         role="button" href="/logout"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);font-size: 12px;"><img
-                            src="/static/template/assets/img/icons/login.png"><span>Logout</span></a>
+                            src="/static/template/assets/img/icons/login.png"><span>Log out</span></a>
                 </div>
             </div>
         </nav><!-- End: NavBarUser -->
@@ -58,7 +58,7 @@
                         class="btn btn-dark d-lg-flex align-items-lg-center ms-md-2" role="button" href="#"
                         style="border-radius: 20px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);font-size: 12px;"
                         data-bs-target="#signin" data-bs-toggle="modal"><img style="transform:rotate(180deg);"
-                            src="/static/template/assets/img/icons/login.png"><span>Sign In</span></a>
+                            src="/static/template/assets/img/icons/login.png"><span>Log In</span></a>
                 </div>
             </div>
             {{end}}
@@ -167,8 +167,9 @@
                                 type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <div>
-                                <p style="color: rgb(0,0,0);">((gonotification)</p>
+                            <div style="color: rgb(0,0,0);">
+                                <p>Looks like you are trying to jump the gun, cowboy 🤠</p>
+                                <p> This feature is yet to come </p>
                             </div>
                         </div>
                         <div class="modal-footer"><button class="btn btn-dark" type="button" data-bs-dismiss="modal"
@@ -181,7 +182,7 @@
                 <div class="modal-dialog modal-sm modal-dialog-centered" role="document">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h4>Sign In</h4><button class="btn-close" type="button" data-bs-dismiss="modal"
+                            <h4>Log In</h4><button class="btn-close" type="button" data-bs-dismiss="modal"
                                 aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -250,7 +251,7 @@
                                             d="M15.545 6.558a9.42 9.42 0 0 1 .139 1.626c0 2.434-.87 4.492-2.384 5.885h.002C11.978 15.292 10.158 16 8 16A8 8 0 1 1 8 0a7.689 7.689 0 0 1 5.352 2.082l-2.284 2.284A4.347 4.347 0 0 0 8 3.166c-2.087 0-3.86 1.408-4.492 3.304a4.792 4.792 0 0 0 0 3.063h.003c.635 1.893 2.405 3.301 4.492 3.301 1.078 0 2.004-.276 2.722-.764h-.003a3.702 3.702 0 0 0 1.599-2.431H8v-3.08h7.545z">
                                         </path>
                                     </svg>&nbsp; Continue with Google</button></div>
-                            <form class="mt-4" action="/registration">
+                            <form class="mt-4" action="/registration" method="post">
                                 <div class="form-group mb-3">
                                     <div class="input-group"><span
                                             class="text-primary input-group-text input-group-text"><svg
@@ -319,7 +320,7 @@
 
     <footer class="text-center bg-dark">
         <div class="container text-white py-4 py-lg-5">
-            <p>Forum project with a standard Golang packages</p>
+            <p>The forum project utilizes standard Golang packages.</p>
             <p class="text-muted mb-0">Copyright © 2023</p>
         </div>
     </footer>
@@ -368,9 +369,17 @@
                 <div>
                     <h1>{{ .Title}}</h1>
                 </div>
-                <div>
-                    <pre>{{ .Content}}</pre>
+                <div class="w-70">
+                    <pre class="text-truncate">{{ .Content}}</pre>
                 </div>
+                {{if .Image}}
+                <div
+                    class="d-flex d-xxl-flex justify-content-left align-items-left justify-content-xxl-left align-items-xxl-left">
+                    <img class="img-fluid" src="/static/template/assets/img/{{.Image}}"
+                        style="max-width: 90%;max-height: 280px;">
+                </div>
+                <br>
+                {{end}}
                 <div
                     class="d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex flex-row align-items-center justify-content-xl-start align-items-xl-center">
                     <form action="/post/id" method="get">
@@ -430,12 +439,14 @@
             </div><!-- Start: comment -->
             <div class="col-12 col-md-7 col-lg-8 col-xl-9 col-xxl-9 d-flex justify-content-xxl-end align-items-xxl-center"
                 style="margin-bottom: 5px;">
-                <form class="d-flex" action="/comment" method="post" style="margin-left: 5px;width: 90%;"><input
-                        class="form-control" type="text" placeholder="Comment..." required="" minlength="5"
-                        maxlength="100"></form>
-                <button class="btn btn-dark" type="submit"
-                    style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-left: 10px;"><img
-                        src="static/template/assets/img/icons/email.png"></button>
+                <form class="d-flex" action="/comment" method="post" style="margin-left: 5px;width: 90%;">
+                    <input type="hidden" name="id" value="{{.Id}}">
+                    <input class="form-control" type="text" name="comment" placeholder="Comment..." required=""
+                        minlength="5" maxlength="100">
+                    <button class="btn btn-dark" type="submit"
+                        style="box-shadow: 2px 2px 2px 2px var(--bs-btn-bg);margin-left: 10px;" title="Comment"><img
+                            src="static/template/assets/img/icons/email.png"></button>
+                </form>
             </div><!-- End: comment -->
         </div>
     </div><!-- End: post-column -->

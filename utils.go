@@ -15,6 +15,7 @@ func setSessionToken(w http.ResponseWriter, creds Credentials) {
 	sessionToken := (uuid).String()
 	expiresAt := time.Now().Add(15 * 60 * time.Second)
 	// Set the token in the session map, along with the session information
+	dropOpenSession(fetchUserByEmail(database, creds.Email))
 	sessions[sessionToken] = session{
 		user:   fetchUserByEmail(database, creds.Email),
 		expiry: expiresAt,
@@ -26,6 +27,14 @@ func setSessionToken(w http.ResponseWriter, creds Credentials) {
 	// 	Expires: expiresAt,
 	// })
 	setSessionCookie(w, sessionToken, expiresAt)
+}
+
+func dropOpenSession(user User) {
+	for k, u := range sessions {
+		if u.user == user {
+			delete(sessions, k)
+		}
+	}
 }
 
 func setLastPage(w http.ResponseWriter, url string) {
@@ -83,6 +92,10 @@ func welcome(w http.ResponseWriter, r *http.Request) Data {
 	output.LoggedIn = true
 	output.User = userSession.user
 	fmt.Printf("\nWelcome %s!\n", userSession.user.Username)
+	// // maybe think how to make session token change less frequently
+	refresh(w, r)
+	setSessionToken(w, Credentials{userSession.user.Username, userSession.user.Email,userSession.user.Password})
+	fmt.Println("refreshing token")
 	return output
 }
 
@@ -160,4 +173,19 @@ func fillPosts(data *Data, posts []Post) []Post {
 		}
 	}
 	return posts
+}
+
+func reverse(posts []Post) {
+	for i, j := 0, len(posts)-1; i < j; i, j = i+1, j-1 {
+		posts[i], posts[j] = posts[j], posts[i]
+	}
+}
+
+func contains(strings []string, s string) bool {
+	for _, v := range strings {
+		if v == s {
+			return true
+		}
+	}
+	return false
 }

@@ -17,6 +17,7 @@
                 <form></form><!-- End: Category -->
             </div><!-- End: categoryColumn -->
         </div><!-- End: psotCategoryDiv -->
+        {{if .LoggedIn}}
         <div id="posts">
             <!-- Start: post-column -->
             <div class="col"
@@ -47,29 +48,36 @@
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
                                 href="likedPosts"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
-                                    src="static/template/assets/img/icons/like.png" style="margin-right: 3px;">&nbsp;My
+                                    src="static/template/assets/img/icons/like.png" style="margin-right: 3px;">&nbsp;
                                 Liked
-                                Posts</a><a
+                                posts</a><a
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
                                 href="dislikedPosts"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/dislike.png"
-                                    style="margin-right: 3px;">&nbsp;My
-                                Disliked Posts</a><a
+                                    style="margin-right: 3px;">&nbsp;
+                                Disliked posts</a><a
                                 class="btn btn-dark d-flex d-sm-flex d-md-flex d-lg-flex d-xl-flex justify-content-start justify-content-sm-start justify-content-md-start justify-content-lg-start align-items-lg-center align-items-xl-center"
                                 role="button"
                                 style="margin-bottom: 10px;box-shadow: 2px 2px 4px 2px rgb(0,0,0);border-radius: 10px;"
                                 href="commentedPosts"><img
                                     class="d-flex d-sm-flex justify-content-start justify-content-sm-start"
                                     src="static/template/assets/img/icons/comments.png"
-                                    style="margin-right: 3px;">&nbsp;My
-                                Commented Posts</a></div>
+                                    style="margin-right: 3px;">&nbsp;
+                                Commented</a></div>
                     </div>
                 </div>
             </div><!-- End: post-column -->
         </div>
+        {{else}}
+        <div class="col" style="padding: 10px;">
+            <p> Looks like you are trying to jump the gun, cowboy 🤠</p>
+            <p> If y'all wanna see your profile, you gotta first register or sign in. It's easy as pie, I
+                tell ya!</p>
+        </div>
+{{end}}
     </div>
 </div><!-- End: post-menu-container -->
 {{end}}

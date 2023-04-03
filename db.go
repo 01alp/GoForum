@@ -263,7 +263,7 @@ func fetchPostByID(db *sql.DB, id int) Post {
 }
 
 func fetchPostsByUserComments(db *sql.DB, id int) []Post {
-	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Image, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN comments c ON c.Post_id = p.id WHERE c.User_id=?", id)
+	record, err := db.Query("SELECT p.id, p.Title, p.Content,  p.Subject, p.User_id, p.Image, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN comments c ON c.Post_id = p.id WHERE c.User_id=?", id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -422,7 +422,7 @@ func fetchReactionByUserAndId(db *sql.DB, table string, user_id int, unit_id int
 }
 
 func fetchLikedPostsByUser(db *sql.DB, user_id int) []Post {
-	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=1)", user_id)
+	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Image, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=1)", user_id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -431,7 +431,7 @@ func fetchLikedPostsByUser(db *sql.DB, user_id int) []Post {
 	var posts []Post
 	for record.Next() {
 		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
@@ -441,7 +441,7 @@ func fetchLikedPostsByUser(db *sql.DB, user_id int) []Post {
 }
 
 func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
-	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=-1)", user_id)
+	record, err := db.Query("SELECT p.id, p.Title, p.Content, p.Subject, p.User_id, p.Image, p.Likes, p.Dislikes, p.timestamp FROM posts p INNER JOIN postsReactions pr ON pr.Unit_id = p.id WHERE (pr.User_id=? AND pr.Reaction=-1)", user_id)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -450,7 +450,7 @@ func fetchDislikedPostsByUser(db *sql.DB, user_id int) []Post {
 	var posts []Post
 	for record.Next() {
 		var post Post
-		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Likes, &post.Dislikes, &post.Timestamp)
+		err = record.Scan(&post.Id, &post.Title, &post.Content, &post.Thread, &post.UserId, &post.Image, &post.Likes, &post.Dislikes, &post.Timestamp)
 		if err != nil {
 			log.Println(err)
 		}
