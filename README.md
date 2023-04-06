@@ -9,16 +9,8 @@ This project consists in creating a web forum that allows :
     - liking and disliking posts and comments.
     - filtering posts.
 
-## Authors
-
-Elina Razena @elinana
-
-Litvintsev Anton @Antosha7
-
-Alper Balaban @alpbal
-
-Orel Margarita @maggieeagle
-
+## Author
+01alp
 ## Usage
   
 To run the web-site on local machine:
